@@ -1,0 +1,141 @@
+.fit() {
+	&:after {
+		content: ' ';
+		height: 0;
+		display: block;
+		clear: both;
+		visibility: hidden;
+	}
+}
+
+
+.omit() {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+
+.omit {
+	.omit();
+}
+
+
+.fit, .clearfix {
+	.fit();
+}
+
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	color: #666;
+	background: #fff;
+}
+
+body {
+	margin: 0;
+	padding: .1px 0;
+	font-family: "SF Pro SC","HanHei SC","SF Pro Text","Myriad Set Pro","SF Pro Icons","PingFang SC","Helvetica Neue","Helvetica","Arial",sans-serif;
+	font-size: 14px;
+	font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 400;
+	line-height: 1.6;
+	margin: 25px 0 7px 0;
+	color: #4aa;
+}
+
+
+h1 {
+	font-size: 48px;
+	margin: 30px 0 0 0;
+}
+
+h2 {
+	font-size: 30px;
+	color: #4ab;
+}
+
+h3 {
+	font-size: 24px;
+	color: #4ac;
+}
+
+h4 {
+	font-size: 20px;
+	color: #4ad;
+}
+
+h5 {
+	font-size: 18px;
+	color: #4ae;
+}
+
+h6 {
+	font-size: 16px;
+	color: #fa7;
+}
+
+
+::selection {
+	color: #fff;
+	background: #aaa;
+	// text-shadow: 0 1px 1px #000;
+}
+
+a {
+	color: #09c;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+	&, &:active, &:focus {
+		outline: none;
+	}
+}
+
+
+hr {
+	height: 1px;
+	margin: 10px 0;
+	overflow: hidden;
+
+	border: none;
+	// background: linear-gradient(to right, #f5f5f5 0%, #ccc 15%, #ccc 85%, #f5f5f5 100%);
+	background: #ddd\9;
+	background: #ddd;
+
+
+	&:before{
+		display: table;
+		content: "";
+	}
+	&:after{
+		display: table;
+		clear: both;
+		content: "";
+	}
+}
+
+
+.center {
+	text-align: center;
+}
+
+
+p {
+	margin: 10px 0;
+}
+
+ul, ol {
+	list-style: none;
+}
+
+
+
