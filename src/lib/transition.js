@@ -3,37 +3,41 @@
  * github.com/flfwzgl
  */
 
+import {
+	addCls,
+	rmCls,
+	bind,
+	unbind,
+	remove
+} from './util';
+
 const SHOW = Symbol('show');
 const HIDDEN = Symbol('hidden');
 
-
 export default class Transition {
-	set (dom) {
-		if (dom) {
-			if (typeof dom === 'string' || dom.nodeType === 1) {
-				this.$el = $(dom);
-			} else if (dom instanceof $) {
-				this.$el = dom;
-			}
-		}
+	set (el) {
+		if (!el || el.nodeType !== 1)
+			throw new TypeError('the argument el must be an element!');
 
-		if (!(this.$el && this.$el.length))
-			throw new Error('the arguments[0] must be an element, a jquery instance or a string that can be parsed as dom');
+		this.el = el;
 
 		return this;
 	}
 
 	show (ctn, name, fn) {
-		if (!this.$el) return;
+		if (!this.el) return;
 		this.ctn = ctn = ctn || document.body;
-		name = name || 'fade';
+		name = name || 'slide';
 
 		this.state = SHOW;
-		this.$el.removeClass(`${this.name}-leave-to`).addClass(`${name}-enter`).appendTo(ctn);
+
+		rmCls(this.el, `${this.name}-leave-to`);
+		addCls(this.el, `${name}-enter`);
+		ctn.appendChild(this.el);
 
 		// this.$el[0].offsetWidth;
 		setTimeout(_ => {
-			this.$el.removeClass(`${name}-enter`);
+			rmCls(this.el, `${name}-enter`);
 		});
 
 		this.name = name;
@@ -41,15 +45,19 @@ export default class Transition {
 	}
 
 	hide (fn) {
-		if (!this.$el) return;
+		if (!this.el) return;
 		this.state = HIDDEN;
 		name = this.name;
-		this.$el.addClass(`${name}-leave-to`).on('transitionend webkitAnimationEnd', ev => {
+
+		addCls(this.el, `${name}-leave-to`);
+		bind(this.el, 'transitionend webkitAnimationEnd', ev => {
 			if (this.state === HIDDEN) {
-				this.$el.removeClass(`${name}-leave-to`).remove();
+				rmCls(this.el, `${name}-leave-to`);
+				remove(this.el);
 				typeof fn === 'function' && fn();
 			}
-		})
+		});
+
 		return this;
 	}
 }

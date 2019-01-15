@@ -26,10 +26,13 @@ export default class Photos extends Event {
 	}
 
 	_init () {
+		let photosBox = this._photosBox = document.createElement('div');
+		photosBox.className = 'photos-box';
 
+		photosBox._tansition = new Transition().set(photosBox);
 	}
 
 	show (n = 0) {
-		
+		this._photosBox._transition.show();
 	}
 }
