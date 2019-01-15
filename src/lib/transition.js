@@ -1,12 +1,13 @@
+/**
+ * created by flfwzgl
+ * github.com/flfwzgl
+ */
+
 const SHOW = Symbol('show');
 const HIDDEN = Symbol('hidden');
 
 
 export default class Transition {
-	// constructor (dom) {
-	// 	this.set(dom);
-	// }
-
 	set (dom) {
 		if (dom) {
 			if (typeof dom === 'string' || dom.nodeType === 1) {

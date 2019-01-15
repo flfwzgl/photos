@@ -1,3 +1,8 @@
+/**
+ * created by flfwzgl
+ * github.com/flfwzgl
+ */
+
 
 let slice = [].slice;
 export default class Event {
