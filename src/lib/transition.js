@@ -3,28 +3,29 @@
  * github.com/flfwzgl
  */
 
+
+import './css/transition.less';
+
 import {
 	addCls,
 	rmCls,
 	bind,
 	unbind,
-	remove
+	rm
 } from './util';
 
 const SHOW = Symbol('show');
 const HIDDEN = Symbol('hidden');
 
 export default class Transition {
-	set (el) {
+	constructor (el) {
 		if (!el || el.nodeType !== 1)
 			throw new TypeError('the argument el must be an element!');
 
 		this.el = el;
-
-		return this;
 	}
 
-	show (ctn, name, fn) {
+	show (ctn, name) {
 		if (!this.el) return;
 		this.ctn = ctn = ctn || document.body;
 		name = name || 'slide';
@@ -53,7 +54,7 @@ export default class Transition {
 		bind(this.el, 'transitionend webkitAnimationEnd', ev => {
 			if (this.state === HIDDEN) {
 				rmCls(this.el, `${name}-leave-to`);
-				remove(this.el);
+				rm(this.el);
 				typeof fn === 'function' && fn();
 			}
 		});
@@ -61,3 +62,7 @@ export default class Transition {
 		return this;
 	}
 }
+
+
+
+

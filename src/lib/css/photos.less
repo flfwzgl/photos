@@ -1,9 +1,18 @@
 
 
 
-
+@t: .5s;
 .photos-box {
-	
+	z-index: 1000000;
+	position: fixed;
+	left: 0px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	overflow: hidden;
+	background: #000;
+
+	transition: transform @t cubic-bezier(.55, 0, .1, 1), opacity @t;
 }
 
 

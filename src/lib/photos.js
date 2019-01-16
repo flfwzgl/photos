@@ -1,6 +1,12 @@
 
-import Transition from './transition';
-import Event from './event';
+import './css/photos.less';
+
+
+import {
+	Transition,
+	Event,
+	bind
+} from './util';
 
 
 export default class Photos extends Event {
@@ -29,10 +35,13 @@ export default class Photos extends Event {
 		let photosBox = this._photosBox = document.createElement('div');
 		photosBox.className = 'photos-box';
 
-		photosBox._tansition = new Transition().set(photosBox);
+		photosBox._transition = new Transition(photosBox);
+		bind(photosBox, 'click', e => e.stopPropagation());
 	}
 
 	show (n = 0) {
-		this._photosBox._transition.show();
+		this._photosBox._transition.show(document.body, 'photos-drop');
+
+		return this;
 	}
 }

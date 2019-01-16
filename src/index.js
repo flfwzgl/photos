@@ -20,8 +20,12 @@ $(_ => {
 	})
 
 
-	$(document).on('click', '.img', _ => {
-		alert(1);
+	let photos = new Photos({
+		list: []
+	});
+
+	$(document).on('click', _ => {
+		photos.show();
 	})
 });
 
