@@ -28,7 +28,7 @@ export default class Transition {
 	show (ctn, name) {
 		if (!this.el) return;
 		this.ctn = ctn = ctn || document.body;
-		name = name || 'slide';
+		name = name || 'photos-slide-right';
 
 		this.state = SHOW;
 

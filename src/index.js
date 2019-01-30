@@ -21,6 +21,9 @@ $(_ => {
 
 	let photos = new Photos({
 		list: [
+			'https://flfwzgl.github.io/static/park2.jpg',
+			'https://flfwzgl.github.io/static/qianshuiwan.jpg',
+			'https://flfwzgl.github.io/static/seaworld.jpg',
 			'https://flfwzgl.github.io/static/park2.jpg'
 		]
 	});
