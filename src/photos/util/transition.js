@@ -4,7 +4,7 @@
  */
 
 
-import './css/transition.less';
+import '../css/transition.less';
 
 import {
 	addCls,
@@ -12,7 +12,7 @@ import {
 	bind,
 	unbind,
 	rm
-} from './util';
+} from './index';
 
 const SHOW = Symbol('show');
 const HIDDEN = Symbol('hidden');

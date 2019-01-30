@@ -26,7 +26,7 @@ module.exports = {
 			// 'core-js/fn/promise',
 			'core-js/fn/array',
 			'core-js/fn/object',
-			resolve('src/lib/photos.js')
+			resolve('src/photos/index.js')
 		],
 		index: resolve('src/index.js')
 	},

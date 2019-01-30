@@ -2,7 +2,7 @@
 
 import 'normalize.css';
 import 'css/index.less';
-import Photos from './lib/photos.js';
+import Photos from './photos';
 
 import mainTpl from 'tpl/main';
 
@@ -19,9 +19,10 @@ $(_ => {
 		lang: langMap[getLangType()],
 	})
 
-
 	let photos = new Photos({
-		list: []
+		list: [
+			'https://flfwzgl.github.io/static/park2.jpg'
+		]
 	});
 
 	$(document).on('click', _ => {

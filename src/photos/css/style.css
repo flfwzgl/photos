@@ -1,0 +1,40 @@
+@font-face {
+  font-family: 'photos';
+  src:
+    url('fonts/photos.ttf?tfkrjn') format('truetype'),
+    url('fonts/photos.woff?tfkrjn') format('woff'),
+    url('fonts/photos.svg?tfkrjn#photos') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="photos_icon--"], [class*=" photos_icon--"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'photos' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.photos_icon--anticlockwise:before {
+  content: "\e965";
+}
+.photos_icon--clockwise:before {
+  content: "\1f5f8";
+}
+.photos_icon--close:before {
+  content: "\1f5f7";
+}
+.photos_icon--arrow-left:before {
+  content: "\1f5f6";
+}
+.photos_icon--arrow-right:before {
+  content: "\1f5f5";
+}

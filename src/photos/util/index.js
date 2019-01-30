@@ -25,7 +25,7 @@ export const bind = (e, type, fn) => {
 		let queue = e.__evt__[type] = e.__evt__[type] || [];
 		queue.push(fn);
 
-		e.addEventListener(e, tp, fn);
+		e.addEventListener(tp, fn);
 	});
 }
 
@@ -43,3 +43,23 @@ export const unbind = (e, type, fn) => {
 }
 
 export const rm = el => el && el.parentNode && el.parentNode.removeChild(el);
+
+
+export const loadImg = url => {
+	return new Promise((r, j) => {
+		let img = new Image();
+		img.onload = function () {
+			r({
+				width: img.width,
+				height: img.height,
+				src: url,
+				url,
+				img
+			});
+		}
+
+		img.onerror = j;
+		img.src = url;
+	})
+}
+
