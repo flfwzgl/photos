@@ -34,7 +34,6 @@ $(_ => {
 			'https://flfwzgl.github.io/static/shenzhen2.jpg',
 			'https://flfwzgl.github.io/static/bridge.jpg',
 			'https://flfwzgl.github.io/static/mushroom.jpg',
-			''
 		]
 	});
 

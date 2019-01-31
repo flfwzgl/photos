@@ -17,7 +17,7 @@ import {
 	rm
 } from './index';
 
-const SHOW = Symbol('show');
+const VISIBLE = Symbol('visible');
 const HIDDEN = Symbol('hidden');
 
 export default class Transition extends Event {
@@ -31,8 +31,8 @@ export default class Transition extends Event {
 		bind(el, 'transitionend', delay(e => {
 			e.stopPropagation();
 
-			if (this.state === SHOW) {
-				e.target === el && this.trigger('show');
+			if (this.state === VISIBLE) {
+				e.target === el && this.trigger('visible');
 			} else if (this.state === HIDDEN) {
 				rmCls(el, `${this.leaveName}-leave-to`);
 				rm(el);
@@ -46,7 +46,7 @@ export default class Transition extends Event {
 	}
 
 	show (name, ctn) {
-		this.state = SHOW;
+		this.state = VISIBLE;
 
 		this.ctn = ctn = ctn || document.body;
 		this.enterName = name = name || 'photos-drop';

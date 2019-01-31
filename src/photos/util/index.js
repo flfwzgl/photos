@@ -1,4 +1,4 @@
-
+import './drag';
 
 export {default as Event} from './event';
 export {default as Transition} from './transition';

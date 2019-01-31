@@ -54,7 +54,7 @@ export default class Photos extends Event {
 
 		this.serial = box.getElementsByClassName('photos_switch_serial')[0];
 
-		box.__transition__ = new Transition(box)//.on('show', _ => console.log('open')).on('hidden', _ => console.log('close'))
+		box.__transition__ = new Transition(box)//.on('visible', _ => console.log('open')).on('hide', _ => console.log('close'))
 		this._bindEventToBox();
 		this._bindEvent();
 	}
@@ -75,7 +75,7 @@ export default class Photos extends Event {
 		if (!this.length) return console.error('opt.list 是空数组!');
 
 		this.box.__transition__.show('photos-drop');
-		this.trigger('show');
+		this.trigger('visible');
 
 		this.showImg(n || this.index || 0);
 
@@ -133,6 +133,14 @@ export default class Photos extends Event {
 				</div>
 			`
 		}
+
+		// obj.el.__transition__
+		// 	.on('visible', _ => {
+		// 		obj.el.drag();
+		// 	})
+		// 	.on('hidden', _ => {
+		// 		obj.el.dragReset();
+		// 	})
 	}
 
 	async showImg (i) {
@@ -153,7 +161,10 @@ export default class Photos extends Event {
 			obj.el.__transition__.show(name, this.box);
 		} else {
 			this.box.appendChild(obj.el);
+			// obj.el.drag();
 		}
+
+		
 
 		await this._loadImg(this.cur = obj);
 		this._preLoadImg();
@@ -185,7 +196,7 @@ export default class Photos extends Event {
 	_bindEventToBox () {
 		let keyupFn;
 		this.box.__transition__
-			.on('show', _ => {
+			.on('visible', _ => {
 				bind(document, 'keyup', keyupFn = e => {
 					// console.log('###')
 					switch (e.keyCode) {
@@ -204,7 +215,9 @@ export default class Photos extends Event {
 
 				bind(window, 'resize', _ => setImgStyle(this.cur.el));
 			})
-			.on('hidden', _ => unbind(document, 'keyup', keyupFn))
+			.on('hidden', _ => {
+				unbind(document, 'keyup', keyupFn);
+			})
 
 	}
 }
