@@ -3,6 +3,7 @@
 export {default as Event} from './event';
 export {default as Transition} from './transition';
 
+export const noop = _ => _;
 
 export const hasCls = (e, cls) => {
 	return (' ' + (e && e.className || '') + ' ').indexOf(' ' + cls + ' ') > -1;
@@ -44,7 +45,6 @@ export const unbind = (e, type, fn) => {
 
 export const rm = el => el && el.parentNode && el.parentNode.removeChild(el);
 
-
 export const loadImg = url => {
 	return new Promise((r, j) => {
 		let img = new Image();
@@ -62,4 +62,28 @@ export const loadImg = url => {
 		img.src = url;
 	})
 }
+
+
+export const delay = (fn, t = 0) => {
+	let flag = false;
+	return function delay (...args) {
+		if (flag) return;
+		flag = true;
+		setTimeout(_ => {
+			fn.call(this, ...args);
+			flag = false;
+		}, t);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
 

@@ -7,58 +7,66 @@
 import '../css/transition.less';
 
 import {
+	Event,
 	addCls,
 	rmCls,
 	bind,
 	unbind,
+	noop,
+	delay,
 	rm
 } from './index';
 
 const SHOW = Symbol('show');
 const HIDDEN = Symbol('hidden');
 
-export default class Transition {
+export default class Transition extends Event {
 	constructor (el) {
+		super();
+
 		if (!el || el.nodeType !== 1)
-			throw new TypeError('the argument el must be an element!');
+			throw new TypeError('The argument el must be an element!');
 
 		this.el = el;
+		bind(el, 'transitionend', delay(e => {
+			e.stopPropagation();
+
+			if (this.state === SHOW) {
+				e.target === el && this.trigger('show');
+			} else if (this.state === HIDDEN) {
+				rmCls(el, `${this.leaveName}-leave-to`);
+				rm(el);
+				e.target === el && this.trigger('hidden');
+			}
+		}));
 	}
 
-	show (ctn, name) {
-		if (!this.el) return;
-		this.ctn = ctn = ctn || document.body;
-		name = name || 'photos-slide-right';
+	get online () {
+		return !!this.el.parentNode;
+	}
 
+	show (name, ctn) {
 		this.state = SHOW;
 
-		rmCls(this.el, `${this.name}-leave-to`);
-		addCls(this.el, `${name}-enter`);
-		ctn.appendChild(this.el);
+		this.ctn = ctn = ctn || document.body;
+		this.enterName = name = name || 'photos-drop';
 
-		// this.$el[0].offsetWidth;
-		setTimeout(_ => {
-			rmCls(this.el, `${name}-enter`);
-		});
+		if (this.online) {
+			this.leaveName && rmCls(this.el, `${this.leaveName}-leave-to`);
+		} else {
+			addCls(this.el, `${name}-enter`);
+			ctn.appendChild(this.el);
+			setTimeout(_ => rmCls(this.el, `${name}-enter`));
+		}
 
-		this.name = name;
 		return this;
 	}
 
-	hide (fn) {
-		if (!this.el) return;
+	hide (name) {
 		this.state = HIDDEN;
-		name = this.name;
+		this.leaveName = name = name || this.enterName || 'photos-drop';
 
 		addCls(this.el, `${name}-leave-to`);
-		bind(this.el, 'transitionend webkitAnimationEnd', ev => {
-			if (this.state === HIDDEN) {
-				rmCls(this.el, `${name}-leave-to`);
-				rm(this.el);
-				typeof fn === 'function' && fn();
-			}
-		});
-
 		return this;
 	}
 }

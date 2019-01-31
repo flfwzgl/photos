@@ -1,22 +1,21 @@
 
 @import 'style.css';
 
-
+.tr(@t: .5s) {
+	transition: transform @t cubic-bezier(.55, 0, .1, 1), opacity @t;
+}
 
 .photos {
-	@t: .5s;
 	&-box {
 		z-index: 1000000;
 		position: fixed;
-		left: 0px;
+		left: 0;
 		right: 0;
 		top: 0;
 		bottom: 0;
 		overflow: hidden;
 		background: #000;
-
-		transition: transform @t cubic-bezier(.55, 0, .1, 1), opacity @t;
-
+		.tr();
 
 		i {
 			font-style: normal;
@@ -38,6 +37,7 @@
 		background: rgba(100, 100, 100, 0.2);
 		border-radius: 50px;
 		cursor: pointer;
+		z-index: 100;
 
 		&:hover {
 			background: rgba(100, 100, 100, 0.5);
@@ -55,6 +55,16 @@
 		left: 50%;
 		bottom: 10px;
 		margin-left: -@w/2;
+		z-index: 100;
+
+		&_serial {
+			width: 60px;
+			line-height: @h;
+			margin: 0 auto;
+			text-align: center;
+			color: #fff;
+			font-size: 14px;
+		}
 
 
 
@@ -93,6 +103,7 @@
 		bottom: 10px;
 		position: absolute;
 		margin-left: 300px;
+		z-index: 100;
 		// background: #fff;
 
 		[class^=photos_icon] {
@@ -125,6 +136,7 @@
 		top: 50%;
 		margin-left: -@d/2;
 		margin-top: -@d/2;
+		.tr();
 
 		img {
 			width: 100%;
@@ -140,9 +152,9 @@
 		.path {
 			stroke-dasharray: 90, 150;
 			stroke-dashoffset: 0;
-			stroke-width: 2;
-			stroke: #33a466;
-			stroke-linecap: round;
+			stroke-width: 6;
+			stroke: #f70;
+			stroke-linecap: butt;
 			animation: photos_loading-dash 1.5s ease-in-out infinite;
 		}
 	}
