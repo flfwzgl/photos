@@ -1,8 +1,12 @@
 
 @import 'style.css';
 
-.tr(@t: 1s) {
+.tr(@t: .5s) {
 	transition: transform @t, opacity @t;
+}
+
+.test {
+	transition-duration: 3s;
 }
 
 .photos {
@@ -136,6 +140,8 @@
 		top: 50%;
 		margin-left: -@d/2;
 		margin-top: -@d/2;
+		will-change: transform, opacity;
+
 		.tr();
 
 		img {

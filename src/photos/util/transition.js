@@ -8,6 +8,7 @@ import '../css/transition.less';
 
 import {
 	Event,
+	hasCls,
 	addCls,
 	rmCls,
 	bind,
@@ -66,7 +67,7 @@ export default class Transition extends Event {
 		this.state = HIDDEN;
 		this.leaveName = name = name || this.enterName || 'photos-drop';
 
-		addCls(this.el, `${name}-leave-to`);
+		setTimeout(_ => addCls(this.el, `${name}-leave-to`));
 		return this;
 	}
 }

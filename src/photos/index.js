@@ -125,6 +125,7 @@ export default class Photos extends Event {
 			let el = obj.el = document.createElement('div');
 			el.__transition__ = new Transition(el);
 			el.className = 'photos_img';
+			el.dataset.id = obj.index;
 			el.innerHTML = `
 				<div class="photos_loading">
 					<svg viewBox="25 25 50 50" class="circular">
@@ -146,7 +147,7 @@ export default class Photos extends Event {
 	async showImg (i) {
 		let n = this._getAppropriateIndex(i);
 
-		this.serial.innerHTML = `${n + 1} / ${this.length}`
+		this.serial.innerHTML = `${n + 1} / ${this.length}`;
 
 		if (this.index === n) return;
 
@@ -158,7 +159,10 @@ export default class Photos extends Event {
 		if (cur) {
 			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
 			cur.el.__transition__.hide(name);
+			console.log(cur.index, 'hide', cur.el.outerHTML);
+
 			obj.el.__transition__.show(name, this.box);
+			console.log(obj.index, 'show')
 		} else {
 			this.box.appendChild(obj.el);
 			// obj.el.drag();
@@ -198,11 +202,9 @@ export default class Photos extends Event {
 		this.box.__transition__
 			.on('visible', _ => {
 				bind(document, 'keyup', keyupFn = e => {
-					// console.log('###')
 					switch (e.keyCode) {
 						case 37:
 						case 38:
-							// console.log('****')
 							this.showImg(this.index - 1);
 							break;
 
