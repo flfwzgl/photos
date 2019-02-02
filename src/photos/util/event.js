@@ -54,7 +54,7 @@ export default class Event {
 		let fns = this._evbus[type];
 
 		if (fns && fns.length) {
-			fns.forEach(fn => fn(...d));
+			fns.forEach(fn => fn.call(this, ...d));
 		}
 
 		return this;

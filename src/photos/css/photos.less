@@ -128,6 +128,24 @@
 		
 	}
 
+
+	&_img-wrap {
+		@t: .3s;
+		// @d: 30px;
+		// width: @d;
+		// height: @d;
+		// margin-left: -@d/2;
+		// margin-top: -@d/2;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transition: width @t, height @t, margin-left @t, margin-top @t;
+		will-change: width, height, margin-left, margin-top;
+		// border: 2px solid #f70;
+		overflow: hidden;
+		// clip: rect(0, auto, auto, 0);
+	}
+
 	&_img {
 		@d: 30px;
 		width: @d;
@@ -139,7 +157,7 @@
 		margin-top: -@d/2;
 		will-change: transform, opacity;
 
-		.tr(.8s);
+		.tr(.5s);
 
 		img {
 			width: 100%;

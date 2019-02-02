@@ -14,6 +14,7 @@ import {
 } from './util';
 
 import mainTpl from './tpl/main';
+import loadingTpl from './tpl/loading';
 
 export default class Photos extends Event {
 	constructor (opt = {}) {
@@ -53,8 +54,9 @@ export default class Photos extends Event {
 		box.innerHTML = mainTpl();
 
 		this.serial = box.getElementsByClassName('photos_switch_serial')[0];
+		this.wrap = box.getElementsByClassName('photos_img-wrap')[0];
 
-		box.__transition__ = new Transition(box)//.on('visible', _ => console.log('open')).on('hide', _ => console.log('close'))
+		this._transition = new Transition(box)//.on('visible', _ => console.log('open')).on('hide', _ => console.log('close'))
 		this._bindEventToBox();
 		this._bindEvent();
 	}
@@ -74,10 +76,14 @@ export default class Photos extends Event {
 	show (n) {
 		if (!this.length) return console.error('opt.list 是空数组!');
 
-		this.box.__transition__.show('photos-drop');
-		this.trigger('visible');
+		this._transition.show('photos-drop');
 
-		this.showImg(n || this.index || 0);
+		n = Math.random() * this.length | 0;
+
+		setTimeout(_ => {
+			this.trigger('visible');
+			this.showImg(n || this.index || 0);
+		})
 
 		return this;
 	}
@@ -85,18 +91,22 @@ export default class Photos extends Event {
 
 	async _loadImg (obj) {
 		let url = obj.url;
-		if (this._inteceptor)
-			url = obj.url = await this._inteceptor(obj.key);
+		if (this._inteceptor) {
+			let p = this._inteceptor(obj.key);
+			url = obj.url = p instanceof Promise ? await p : p;	
+		}
 
 		try {
 			let {img, width, height} = await loadImg(url);
-			obj.el.__origin__ = {width, height};
+			obj.origin = {width, height};
 
-			setImgStyle(obj.el);
+			this._setImgStyle(obj);
 
+			obj.loaded = true;
 			obj.el.innerHTML = '';
 			obj.el.appendChild(img);
-			obj.loaded = true;
+
+			this._setDrag(obj);
 		} catch (e) {
 			console.log(e);
 			// console.error(`${obj.url} load error!`)
@@ -121,27 +131,29 @@ export default class Photos extends Event {
 	}
 
 	_initPhotoImg (obj) {
-		if (!obj.el) {
-			let el = obj.el = document.createElement('div');
-			el.__transition__ = new Transition(el);
-			el.className = 'photos_img';
-			el.dataset.id = obj.index;
-			el.innerHTML = `
-				<div class="photos_loading">
-					<svg viewBox="25 25 50 50" class="circular">
-						<circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
-					</svg>
-				</div>
-			`
-		}
+		if (obj.el) return;
 
-		// obj.el.__transition__
-		// 	.on('visible', _ => {
-		// 		obj.el.drag();
-		// 	})
-		// 	.on('hidden', _ => {
-		// 		obj.el.dragReset();
-		// 	})
+		let el = obj.el = document.createElement('div');
+		el.className = 'photos_img';
+		el.dataset.id = obj.index;
+		el.innerHTML = loadingTpl();
+
+		obj.adapted = {width: 500, height: 500};
+		obj.transition = new Transition(el);
+	
+		let self = this;
+		obj.transition
+			.on('visible', function () {
+				// console.log(this.el, '+++');
+				if (self.index === obj.index) {
+					// self._setDrag(obj);
+					console.log(123);
+				}
+			})
+			.on('hidden', function () {
+				obj.el.dragReset();
+			})
+
 	}
 
 	async showImg (i) {
@@ -158,25 +170,28 @@ export default class Photos extends Event {
 		let cur = this.cur;
 		if (cur) {
 			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
-			cur.el.__transition__.hide(name);
-			console.log(cur.index, 'hide', cur.el.outerHTML);
-
-			obj.el.__transition__.show(name, this.box);
-			console.log(obj.index, 'show')
+			cur.transition.hide(name);
+			obj.transition.show(name, this.wrap);
 		} else {
-			this.box.appendChild(obj.el);
-			// obj.el.drag();
+			this.wrap.appendChild(obj.el);
 		}
 
-		
+		this._setWrap(obj);
 
 		await this._loadImg(this.cur = obj);
 		this._preLoadImg();
 	}
 
 	hide () {
-		let tr = this.box.__transition__;
+		let tr = this._transition;
 		tr && tr.hide('photos-drop');
+	}
+
+	_setDrag (obj) {
+		if (this.index !== obj.index) return;
+
+		obj.el.onmousedown = _ => this.wrap.style.overflow = 'visible';
+		obj.el.drag();
 	}
 
 	_bindEvent () {
@@ -190,6 +205,15 @@ export default class Photos extends Event {
 				this.showImg(this.index - 1);
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
 				this.showImg(this.index + 1);
+			} else if (hasCls(e, 'photos_icon--clockwise')) {
+				this.wrap.style.overflow = 'visible';
+				this.cur.el.rotate(90);
+			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
+				this.wrap.style.overflow = 'visible';
+				this.cur.el.rotate(-90);
+			} else if (hasCls(e, 'photos_icon--reset')) {
+				this.cur.el.dragReset();
+				this._setImgStyle(this.cur);
 			}
 
 		});
@@ -199,8 +223,9 @@ export default class Photos extends Event {
 
 	_bindEventToBox () {
 		let keyupFn;
-		this.box.__transition__
+		this._transition
 			.on('visible', _ => {
+				console.log('box show');
 				bind(document, 'keyup', keyupFn = e => {
 					switch (e.keyCode) {
 						case 37:
@@ -215,17 +240,38 @@ export default class Photos extends Event {
 					}
 				});
 
-				bind(window, 'resize', _ => setImgStyle(this.cur.el));
+				bind(window, 'resize', _ => {
+					this._setImgStyle(this.cur)
+				});
 			})
 			.on('hidden', _ => {
 				unbind(document, 'keyup', keyupFn);
 			})
 
 	}
+
+	_setImgStyle (obj) {
+		if (!obj.origin) return;
+
+		let {width, height} = obj.origin;
+		let {w, h} = getAdaptedSize(width, height);
+
+		let adapted = obj.adapted = {width: w, height: h};
+		obj.el.style.cssText = `width: ${w}px; height: ${h}px; margin-left: ${-w/2}px; margin-top: ${-h/2}px`;
+
+		this._setWrap(obj);
+		return adapted;
+	}
+
+	_setWrap (obj) {
+		if (this.index !== obj.index) return;
+		let {width, height} = obj.adapted;
+		this.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
+	}
 }
 
 
-const getAppropriateSize = (w, h) => {
+const getAdaptedSize = (w, h) => {
 	let r = w / h;
 	let cw = document.documentElement.clientWidth;
 	let ch = document.documentElement.clientHeight;
@@ -243,14 +289,6 @@ const getAppropriateSize = (w, h) => {
 	}
 
 	return {w, h};
-}
-
-const setImgStyle = el => {
-	if (!el.__origin__) return;
-
-	let {width, height} = el.__origin__;
-	let {w, h} = getAppropriateSize(width, height);
-	el.style.cssText = `width: ${w}px; height: ${h}px; margin-left: ${-w/2}px; margin-top: ${-h/2}px`;
 }
 
 

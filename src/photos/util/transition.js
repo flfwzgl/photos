@@ -13,8 +13,6 @@ import {
 	rmCls,
 	bind,
 	unbind,
-	noop,
-	delay,
 	rm
 } from './index';
 
@@ -29,17 +27,25 @@ export default class Transition extends Event {
 			throw new TypeError('The argument el must be an element!');
 
 		this.el = el;
-		bind(el, 'transitionend', delay(e => {
+		bind(el, 'transitionend', e => {
 			e.stopPropagation();
 
+			if (!this.stateChanged || e.currentTarget !== el) return;
+
+			// console.log(this.stateChanged, '###', this.state, el);
+			
+			this.stateChanged = false;
+			
 			if (this.state === VISIBLE) {
-				e.target === el && this.trigger('visible');
+				this.trigger('visible');
 			} else if (this.state === HIDDEN) {
 				rmCls(el, `${this.leaveName}-leave-to`);
 				rm(el);
-				e.target === el && this.trigger('hidden');
+				this.trigger('hidden');
 			}
-		}));
+
+			
+		});
 	}
 
 	get online () {
@@ -47,7 +53,9 @@ export default class Transition extends Event {
 	}
 
 	show (name, ctn) {
+		this.stateChanged = this.state !== VISIBLE;
 		this.state = VISIBLE;
+
 
 		this.ctn = ctn = ctn || document.body;
 		this.enterName = name = name || 'photos-drop';
@@ -57,17 +65,23 @@ export default class Transition extends Event {
 		} else {
 			addCls(this.el, `${name}-enter`);
 			ctn.appendChild(this.el);
-			setTimeout(_ => rmCls(this.el, `${name}-enter`));
+
+			this.el.offsetWidth;
+			rmCls(this.el, `${name}-enter`);
+			// setTimeout(_ => rmCls(this.el, `${name}-enter`));
 		}
 
 		return this;
 	}
 
 	hide (name) {
+		this.stateChanged = this.state !== HIDDEN;
 		this.state = HIDDEN;
 		this.leaveName = name = name || this.enterName || 'photos-drop';
 
-		setTimeout(_ => addCls(this.el, `${name}-leave-to`));
+		this.el.offsetWidth;
+		addCls(this.el, `${name}-leave-to`);
+		// setTimeout(_ => addCls(this.el, `${name}-leave-to`));
 		return this;
 	}
 }

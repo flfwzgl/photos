@@ -84,31 +84,33 @@ Object.assign(Element.prototype, {
 		return this;
 	},
 
-	// 恢复坐标,角度
-	dragReset (alterAngle = true) {
+	dragReset () {
 		if (!this.__transform__) return;
 
 		let obj = this.__transform__;
-		obj.x = obj.y = 0;
-		if (alterAngle) obj.a = 0;
+		obj.x = obj.y = obj.a = 0;
 
 		transition(this, 'initial');
-		transform(this, `translate3d(0, 0, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
-		this.offsetLeft;
+		// transform(this, `translate3d(0, 0, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
+		transform(this, '');
+		this.offsetWidth;
 		transition(this, '');
 		return this;
 	},
 
 	// 打开拖拽
 	drag () {
-		let obj = this.__initTransform__();
+		if (this.dragInited) return;
 
-		if (obj.mousedownFn) {
-			this.dragReset(false);
-			obj.status = true;
-		} else {
-			this.addEventListener('mousedown', obj.mousedownFn = mousedown);
-		}
+		let obj = this.__initTransform__();
+		this.addEventListener('mousedown', obj.mousedownFn = mousedown);
+
+		// if (obj.mousedownFn) {
+		// 	this.dragReset(false);
+		// 	obj.status = true;
+		// } else {
+		// 	this.addEventListener('mousedown', obj.mousedownFn = mousedown);
+		// }
 
 		return this;
 	}

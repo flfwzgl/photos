@@ -31,6 +31,7 @@ $(_ => {
 			'https://flfwzgl.github.io/static/wutongshan.jpg',
 			'https://flfwzgl.github.io/static/grass.jpg',
 			'https://flfwzgl.github.io/static/snail.jpg',
+			'https://flfwzgl.github.io/static/optimus.jpg',
 			'https://flfwzgl.github.io/static/shenzhen2.jpg',
 			'https://flfwzgl.github.io/static/bridge.jpg',
 			'https://flfwzgl.github.io/static/mushroom.jpg',
