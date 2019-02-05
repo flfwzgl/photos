@@ -7,12 +7,9 @@ import {
 	Event,
 	bind,
 	unbind,
-	addCls,
 	hide,
 	show,
 	hasCls,
-	noop,
-	delay,
 	loadImg
 } from './util';
 
@@ -216,7 +213,6 @@ export default class Photos extends Event {
 
 		this._setWrap(obj);
 
-		console.log(555);
 		this._operateTr.hide();
 		await this._loadImg(this.cur = obj);
 		this._preLoadImg();
@@ -230,7 +226,7 @@ export default class Photos extends Event {
 	_setDrag (obj) {
 		if (!this._is(obj)) return;
 
-		obj.el.onmousedown = _ => this._cutWrap();
+		obj.el.onmousedown = _ => this._visibleWrap();
 		obj.el.drag();
 	}
 
@@ -249,10 +245,10 @@ export default class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
-				this._cutWrap();
+				this._visibleWrap();
 				el.rotate(90);
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
-				this._cutWrap();
+				this._visibleWrap();
 				el.rotate(-90);
 			} else if (hasCls(e, 'photos_icon--reset')) {
 				el.dragReset();
@@ -260,7 +256,7 @@ export default class Photos extends Event {
 				this._setImgStyle(obj);
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
-				this._cutWrap();
+				this._visibleWrap();
 				el.style.width = width + 'px';
 				el.style.height = height + 'px';
 				el.style.marginLeft = -width / 2 + 'px';
@@ -279,6 +275,9 @@ export default class Photos extends Event {
 				console.log('box show');
 				bind(document, 'keyup', keyupFn = e => {
 					switch (e.keyCode) {
+						case 27:
+							this.hide();
+							break;
 						case 37:
 						case 38:
 							this.showImg(this.index - 1);
@@ -327,7 +326,7 @@ export default class Photos extends Event {
 		this.dom.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
 	}
 
-	_cutWrap (flag = false) {
+	_visibleWrap (flag = false) {
 		this.dom.wrap.style.overflow = flag ? 'hidden' : 'visible';
 	}
 }
