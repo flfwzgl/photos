@@ -75,6 +75,7 @@ export default class Transition extends Event {
 	}
 
 	hide (name) {
+		if (!this.online) return;
 		this.stateChanged = this.state !== HIDDEN;
 		this.state = HIDDEN;
 		this.leaveName = name = name || this.enterName || 'photos-drop';

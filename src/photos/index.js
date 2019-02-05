@@ -7,6 +7,9 @@ import {
 	Event,
 	bind,
 	unbind,
+	addCls,
+	hide,
+	show,
 	hasCls,
 	noop,
 	delay,
@@ -15,6 +18,8 @@ import {
 
 import mainTpl from './tpl/main';
 import loadingTpl from './tpl/loading';
+import operateTpl from './tpl/operate';
+import switchTpl from './tpl/switch';
 
 export default class Photos extends Event {
 	constructor (opt = {}) {
@@ -50,13 +55,29 @@ export default class Photos extends Event {
 	_init () {
 		let box = this.box = document.createElement('div');
 		box.className = 'photos-box';
-
 		box.innerHTML = mainTpl();
 
-		this.serial = box.getElementsByClassName('photos_switch_serial')[0];
-		this.wrap = box.getElementsByClassName('photos_img-wrap')[0];
 
-		this._transition = new Transition(box)//.on('visible', _ => console.log('open')).on('hide', _ => console.log('close'))
+		let iswitch = this.iswitch = document.createElement('div');
+		iswitch.className = 'photos_switch';
+		iswitch.innerHTML = switchTpl();
+
+
+		let operate = document.createElement('div');
+		operate.className = 'photos_operate';
+		operate.innerHTML = operateTpl();
+
+		this.dom = {
+			serial: iswitch.getElementsByClassName('photos_switch_serial')[0],
+			wrap: box.getElementsByClassName('photos_img-wrap')[0],
+			operate,
+			iconOrigin: operate.getElementsByClassName('photos_icon--origin')[0],
+		};
+
+		this._switchTr = new Transition(iswitch);
+		this._operateTr = new Transition(operate);
+
+		this._tr = new Transition(box)//.on('visible', _ => console.log('open')).on('hide', _ => console.log('close'))
 		this._bindEventToBox();
 		this._bindEvent();
 	}
@@ -76,7 +97,7 @@ export default class Photos extends Event {
 	show (n) {
 		if (!this.length) return console.error('opt.list 是空数组!');
 
-		this._transition.show('photos-drop');
+		this._tr.show('photos-drop');
 
 		n = Math.random() * this.length | 0;
 
@@ -87,7 +108,6 @@ export default class Photos extends Event {
 
 		return this;
 	}
-
 
 	async _loadImg (obj) {
 		let url = obj.url;
@@ -100,30 +120,49 @@ export default class Photos extends Event {
 			let {img, width, height} = await loadImg(url);
 			obj.origin = {width, height};
 
-			this._setImgStyle(obj);
-
 			obj.loaded = true;
-			obj.el.innerHTML = '';
-			obj.el.appendChild(img);
 
-			this._setDrag(obj);
+			if (obj.el) {
+				this._setImgStyle(obj);
+				obj.el.innerHTML = '';
+				obj.el.appendChild(img);
+			}
+
+			if (this._is(obj)) {
+				// console.log(123);
+				this._operateTr.show('photos-drop', this.box);
+				this._setDrag(obj);
+				// console.log(obj.index, this.index, '+++', );
+
+				let {adapted, origin} = obj;
+				
+				adapted.width === origin.width && adapted.height === origin.height
+					? hide(this.dom.iconOrigin)
+					: show(this.dom.iconOrigin)
+			}
 		} catch (e) {
+			throw e;
 			console.log(e);
 			// console.error(`${obj.url} load error!`)
 		}
 	}
 
 	async _preLoadImg () {
-		var i = 1;
-		while (i <= 5) {
-			let n = this._getAppropriateIndex(this.index + i++);
-			let obj = this.list[n];
-			this._initPhotoImg(obj);
-			await this._loadImg(obj);
+		let i = 1;
+		while (i <= 6) {
+			let n = this.index;
+			await Promise.all([
+				this._loadImg(this._getObj(n + i++)),
+				this._loadImg(this._getObj(n + i++)),
+			])
 		}
 	}
 
-	_getAppropriateIndex (i) {
+	_getObj (i) {
+		return this._list[this._getIndex(i)];
+	}
+
+	_getIndex (i) {
 		let l = this.length;
 		return i >= l
 			? i % l
@@ -145,10 +184,10 @@ export default class Photos extends Event {
 		obj.transition
 			.on('visible', function () {
 				// console.log(this.el, '+++');
-				if (self.index === obj.index) {
-					// self._setDrag(obj);
-					console.log(123);
-				}
+				// if (self.index === obj.index) {
+				// 	// self._setDrag(obj);
+				// 	console.log(123);
+				// }
 			})
 			.on('hidden', function () {
 				obj.el.dragReset();
@@ -157,11 +196,10 @@ export default class Photos extends Event {
 	}
 
 	async showImg (i) {
-		let n = this._getAppropriateIndex(i);
-
-		this.serial.innerHTML = `${n + 1} / ${this.length}`;
-
+		let n = this._getIndex(i);
 		if (this.index === n) return;
+
+		this.dom.serial.innerHTML = `${n + 1} / ${this.length}`;
 
 		this._index = n;
 		let obj = this.list[n];
@@ -171,34 +209,39 @@ export default class Photos extends Event {
 		if (cur) {
 			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
 			cur.transition.hide(name);
-			obj.transition.show(name, this.wrap);
+			obj.transition.show(name, this.dom.wrap);
 		} else {
-			this.wrap.appendChild(obj.el);
+			this.dom.wrap.appendChild(obj.el);
 		}
 
 		this._setWrap(obj);
 
+		console.log(555);
+		this._operateTr.hide();
 		await this._loadImg(this.cur = obj);
 		this._preLoadImg();
 	}
 
 	hide () {
-		let tr = this._transition;
+		let tr = this._tr;
 		tr && tr.hide('photos-drop');
 	}
 
 	_setDrag (obj) {
-		if (this.index !== obj.index) return;
+		if (!this._is(obj)) return;
 
-		obj.el.onmousedown = _ => this.wrap.style.overflow = 'visible';
+		obj.el.onmousedown = _ => this._cutWrap();
 		obj.el.drag();
 	}
 
 	_bindEvent () {
 		bind(this.box, 'click', e => {
 			e.stopPropagation();
-
 			e = e.target;
+
+			let obj = this.cur;
+			let {el, origin} = obj;
+
 			if (hasCls(e, 'photos_icon--close')) {
 				this.hide();
 			} else if (hasCls(e, 'photos_icon--arrow-left')) {
@@ -206,14 +249,22 @@ export default class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
-				this.wrap.style.overflow = 'visible';
-				this.cur.el.rotate(90);
+				this._cutWrap();
+				el.rotate(90);
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
-				this.wrap.style.overflow = 'visible';
-				this.cur.el.rotate(-90);
+				this._cutWrap();
+				el.rotate(-90);
 			} else if (hasCls(e, 'photos_icon--reset')) {
-				this.cur.el.dragReset();
-				this._setImgStyle(this.cur);
+				el.dragReset();
+				this._setWrap(obj);
+				this._setImgStyle(obj);
+			} else if (hasCls(e, 'photos_icon--origin')) {
+				let {width, height} = origin;
+				this._cutWrap();
+				el.style.width = width + 'px';
+				el.style.height = height + 'px';
+				el.style.marginLeft = -width / 2 + 'px';
+				el.style.marginTop = -height / 2 + 'px';
 			}
 
 		});
@@ -223,7 +274,7 @@ export default class Photos extends Event {
 
 	_bindEventToBox () {
 		let keyupFn;
-		this._transition
+		this._tr
 			.on('visible', _ => {
 				console.log('box show');
 				bind(document, 'keyup', keyupFn = e => {
@@ -241,8 +292,11 @@ export default class Photos extends Event {
 				});
 
 				bind(window, 'resize', _ => {
-					this._setImgStyle(this.cur)
+					this.cur.el.dragReset();
+					this._setImgStyle(this.cur);
 				});
+
+				this.length > 1 && this._switchTr.show('photos-drop', this.box);
 			})
 			.on('hidden', _ => {
 				unbind(document, 'keyup', keyupFn);
@@ -263,10 +317,18 @@ export default class Photos extends Event {
 		return adapted;
 	}
 
+	_is (obj) {
+		return this.index === obj.index;
+	}
+
 	_setWrap (obj) {
 		if (this.index !== obj.index) return;
 		let {width, height} = obj.adapted;
-		this.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
+		this.dom.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
+	}
+
+	_cutWrap (flag = false) {
+		this.dom.wrap.style.overflow = flag ? 'hidden' : 'visible';
 	}
 }
 

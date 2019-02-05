@@ -91,7 +91,7 @@ Object.assign(Element.prototype, {
 		obj.x = obj.y = obj.a = 0;
 
 		transition(this, 'initial');
-		// transform(this, `translate3d(0, 0, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
+		transform(this, `translate3d(0, 0, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
 		transform(this, '');
 		this.offsetWidth;
 		transition(this, '');

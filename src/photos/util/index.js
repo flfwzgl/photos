@@ -77,6 +77,19 @@ export const delay = (fn, t = 0) => {
 }
 
 
+export const hide = e => {
+	if (e instanceof Element) {
+		e._display = e.style.display;
+		e.style.display = 'none';
+	}
+}
+export const show = e => {
+	if (e instanceof Element) {
+		e.style.display = e._display || '';
+	}
+}
+
+
 
 
 
