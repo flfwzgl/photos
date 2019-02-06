@@ -140,15 +140,12 @@ export default class Photos extends Event {
 		}
 	}
 
-	async _preLoadImg () {
-		let i = 1;
-		while (i <= 6) {
-			let n = this.index;
-			await Promise.all([
-				this._loadImg(this._getObj(n + i++)),
-				this._loadImg(this._getObj(n + i++)),
-			])
-		}
+	_preLoadImg () {
+		let n = this.index;
+		let i = 0;
+
+		while (i <= 6)
+			this._loadImg(this._getObj(n + ++i));
 	}
 
 	_getObj (i) {
