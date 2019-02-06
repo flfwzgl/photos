@@ -37,19 +37,20 @@ const urlList = thumbList.map(e => e.replace(/thumb_/, ''));
 
 
 $(_ => {
-	document.body.innerHTML = mainTpl({
-		lang: langMap[getLangType()],
-		list: thumbList,
-	});
-
 	let photos = new Photos({
 		list: urlList
 	});
 
-	$(document).on('click', '.img', e => {
-		let i = +e.currentTarget.dataset.id;
-		photos.show(i);
-	})
+
+	$(document.body)
+		.append(mainTpl({
+			lang: langMap[getLangType()],
+			list: thumbList,
+		}))
+		.on('click', '.img', e => {
+			let i = +e.currentTarget.dataset.id;
+			photos.show(i);
+		})
 });
 
 
