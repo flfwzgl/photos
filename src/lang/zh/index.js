@@ -6,6 +6,6 @@ export default {
 		usage: '用法',
 		license: '协议'
 	},
-	des: 'JavaScript 相册, 无任何依赖, ~5KB',
+	des: 'JavaScript 相册, 无任何依赖',
 	usage
 }

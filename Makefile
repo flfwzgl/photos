@@ -10,7 +10,7 @@ dev:
 
 
 production:
-	@rm -rf dist && NODE_ENV=production ./node_modules/.bin/webpack\
+	@rm -rf docs && NODE_ENV=production ./node_modules/.bin/webpack\
 	 --config build/webpack.base.js\
 	 --verbose\
 	 --progress\

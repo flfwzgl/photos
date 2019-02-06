@@ -1,59 +1,18 @@
-function mousedown (ev) {
-	let obj = this.__transform__;
 
-	if (!obj.status) return;
 
-	ev.stopPropagation();
-	this.onselectstart = _ => false;
+export default class Drag {
+	constructor (el) {
+		if (!(el instanceof Element))
+			throw new Error('el must be an Element');
 
-	let mx = ev.clientX,
-		my = ev.clientY
+		this.el = el;
+		el.__drag__ = this;
 
-	let x = obj.x || 0,
-		y = obj.y || 0
+		this._initTransform();
+	}
 
-	transition(this, 'initial');
-	this.style.cursor = 'move';
-
-	let mousemoveFn, mouseupFn;
-
-	document.addEventListener('mousemove', mousemoveFn = ev => {
-		if (!obj.status) return;
-		obj.x = ev.clientX - mx + x;
-		obj.y = ev.clientY - my + y;
-
-		transform(this, `translate3d(${obj.x}px, ${obj.y}px, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
-	});
-
-	document.addEventListener('mouseup', mouseupFn = ev => {
-		document.removeEventListener('mousemove', mousemoveFn);
-		document.removeEventListener('mouseup', mouseupFn);
-
-		transition(this, '');
-		this.style.cursor = 'initial';
-	});
-
-}
-
-function transform (e, v) {
-	e.style.transform = v;
-	e.style.webkitTransform = v;
-	e.style.mozTransform = v;
-	e.style.msTransform = v;
-	e.style.oTransform = v;
-}
-
-function transition (e, v) {
-	e.style.transition = v;
-	e.style.webkitTransition = v;
-	e.style.mozTransition = v;
-	e.style.msTransition = v;
-	e.style.oTransition = v;
-}
-
-Object.assign(Element.prototype, {
-	__initTransform__ () {
-		return this.__transform__ = this.__transform__ || {
+	_initTransform () {
+		return this._transform = this._transform || {
 			x: 0,
 			y: 0,
 			a: 0,
@@ -61,57 +20,87 @@ Object.assign(Element.prototype, {
 			status: true,
 			mousedownFn: null
 		}
-	},
+	}
 
-	get dragInited () {
-		return !!this.__transform__;
-	},
-
-	// 旋转指定角度
 	rotate (delta = 90) {
-		let obj = this.__initTransform__();
+		let obj = this._transform;
 		obj.a += delta;
-		transform(this, `translate3d(${obj.x}px, ${obj.y}px, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
-		return this;
-	},
-
-	// 关闭拖动
-	dragStop () {
-		if (!this.__transform__) return;
-
-		let obj = this.__transform__;
-		obj.status = false;
-		return this;
-	},
-
-	dragReset () {
-		if (!this.__transform__) return;
-
-		let obj = this.__transform__;
-		obj.x = obj.y = obj.a = 0;
-
-		transition(this, 'initial');
-		transform(this, `translate3d(0, 0, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
-		transform(this, '');
-		this.offsetWidth;
-		transition(this, '');
-		return this;
-	},
-
-	// 打开拖拽
-	drag () {
-		if (this.dragInited) return;
-
-		let obj = this.__initTransform__();
-		this.addEventListener('mousedown', obj.mousedownFn = mousedown);
-
-		// if (obj.mousedownFn) {
-		// 	this.dragReset(false);
-		// 	obj.status = true;
-		// } else {
-		// 	this.addEventListener('mousedown', obj.mousedownFn = mousedown);
-		// }
-
+		this._setTransform(`translate3d(${obj.x}px, ${obj.y}px, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
 		return this;
 	}
-});
+
+	start () {
+		this.el.addEventListener('mousedown', this._mousedown.bind(this));
+		return this;
+	}
+
+	stop () {
+		let obj = this._transform;
+		obj.status = false;
+		this.el.removeEventListener('mousedown', this._mousedown);
+		return this;
+	}
+
+	reset () {
+		let obj = this._transform;
+		obj.x = obj.y = obj.a = 0;
+
+		this._setTransition('initial');
+		this._setTransform();
+		this.el.offsetWidth;
+		this._setTransition('');
+		return this;
+	}
+
+	_mousedown (ev) {
+		let obj = this._transform;
+
+		if (!obj.status) return;
+
+		ev.stopPropagation();
+		this.onselectstart = _ => false;
+
+		let mx = ev.clientX,
+			my = ev.clientY
+
+		let x = obj.x || 0,
+			y = obj.y || 0
+
+		this._setTransition('initial');
+		this.el.style.cursor = 'move';
+
+		let mousemoveFn, mouseupFn;
+
+		document.addEventListener('mousemove', mousemoveFn = ev => {
+			if (!obj.status) return;
+			obj.x = ev.clientX - mx + x;
+			obj.y = ev.clientY - my + y;
+
+			this._setTransform(`translate3d(${obj.x}px, ${obj.y}px, 0) rotate3d(0, 0, 1, ${obj.a}deg)`);
+		});
+
+		document.addEventListener('mouseup', mouseupFn = ev => {
+			document.removeEventListener('mousemove', mousemoveFn);
+			document.removeEventListener('mouseup', mouseupFn);
+
+			this._setTransition();
+			this.el.style.cursor = 'initial';
+		});
+	}
+
+	_setTransform (v = '') {
+		this.el.style.transform = v;
+		this.el.style.webkitTransform = v;
+		this.el.style.mozTransform = v;
+		this.el.style.msTransform = v;
+		this.el.style.oTransform = v;
+	}
+
+	_setTransition (v = '') {
+		this.el.style.transition = v;
+		this.el.style.webkitTransition = v;
+		this.el.style.mozTransition = v;
+		this.el.style.msTransition = v;
+		this.el.style.oTransition = v;
+	}
+}

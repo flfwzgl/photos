@@ -6,6 +6,6 @@ export default {
 		usage: 'Usage',
 		license: 'License',
 	},
-	des: 'JavaScript gallery, no dependencies, ~5KB',
+	des: 'JavaScript gallery, no dependencies',
 	usage
 }

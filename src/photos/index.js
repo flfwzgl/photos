@@ -5,12 +5,14 @@ import './css/photos.less';
 import {
 	Transition,
 	Event,
+	Drag,
 	bind,
 	unbind,
 	hide,
 	show,
 	hasCls,
-	loadImg
+	loadImg,
+	isArr,
 } from './util';
 
 import mainTpl from './tpl/main';
@@ -27,7 +29,7 @@ export default class Photos extends Event {
 			inteceptor
 		} = opt;
 
-		if (!Array.isArray(list))
+		if (!isArr(list))
 			throw new TypeError('opt.list must be an array!');
 		
 		if (inteceptor && typeof inteceptor !== 'function')
@@ -96,7 +98,7 @@ export default class Photos extends Event {
 
 		this._tr.show('photos-drop');
 
-		n = Math.random() * this.length | 0;
+		// n = Math.random() * this.length | 0;
 
 		setTimeout(_ => {
 			this.trigger('visible');
@@ -130,12 +132,6 @@ export default class Photos extends Event {
 				this._operateTr.show('photos-drop', this.box);
 				this._setDrag(obj);
 				// console.log(obj.index, this.index, '+++', );
-
-				let {adapted, origin} = obj;
-				
-				adapted.width === origin.width && adapted.height === origin.height
-					? hide(this.dom.iconOrigin)
-					: show(this.dom.iconOrigin)
 			}
 		} catch (e) {
 			throw e;
@@ -179,15 +175,15 @@ export default class Photos extends Event {
 	
 		let self = this;
 		obj.transition
-			.on('visible', function () {
-				// console.log(this.el, '+++');
-				// if (self.index === obj.index) {
-				// 	// self._setDrag(obj);
-				// 	console.log(123);
-				// }
-			})
+			// .on('visible', function () {
+			// 	console.log(this.el, '+++');
+			// 	if (self.index === obj.index) {
+			// 		// self._setDrag(obj);
+			// 		console.log(123);
+			// 	}
+			// })
 			.on('hidden', function () {
-				obj.el.dragReset();
+				obj.el.__drag__ && obj.el.__drag__.reset();
 			})
 
 	}
@@ -226,8 +222,8 @@ export default class Photos extends Event {
 	_setDrag (obj) {
 		if (!this._is(obj)) return;
 
-		obj.el.onmousedown = _ => this._visibleWrap();
-		obj.el.drag();
+		obj.el.onmousedown = _ => this._showOutOfWrap();
+		new Drag(obj.el).start();
 	}
 
 	_bindEvent () {
@@ -245,18 +241,18 @@ export default class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
-				this._visibleWrap();
-				el.rotate(90);
+				this._showOutOfWrap();
+				el.__drag__.rotate(90);
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
-				this._visibleWrap();
-				el.rotate(-90);
+				this._showOutOfWrap();
+				el.__drag__.rotate(-90);
 			} else if (hasCls(e, 'photos_icon--reset')) {
-				el.dragReset();
+				el.__drag__.reset();
 				this._setWrap(obj);
 				this._setImgStyle(obj);
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
-				this._visibleWrap();
+				this._showOutOfWrap();
 				el.style.width = width + 'px';
 				el.style.height = height + 'px';
 				el.style.marginLeft = -width / 2 + 'px';
@@ -291,7 +287,7 @@ export default class Photos extends Event {
 				});
 
 				bind(window, 'resize', _ => {
-					this.cur.el.dragReset();
+					this.cur.el.__drag__ && this.cur.el.__drag__.reset();
 					this._setImgStyle(this.cur);
 				});
 
@@ -313,7 +309,14 @@ export default class Photos extends Event {
 		obj.el.style.cssText = `width: ${w}px; height: ${h}px; margin-left: ${-w/2}px; margin-top: ${-h/2}px`;
 
 		this._setWrap(obj);
-		return adapted;
+
+		if (this._is(obj)) {
+			let {origin} = obj;
+
+			adapted.width === origin.width && adapted.height === origin.height
+				? hide(this.dom.iconOrigin)
+				: show(this.dom.iconOrigin)
+		}
 	}
 
 	_is (obj) {
@@ -326,7 +329,7 @@ export default class Photos extends Event {
 		this.dom.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
 	}
 
-	_visibleWrap (flag = false) {
+	_showOutOfWrap (flag = false) {
 		this.dom.wrap.style.overflow = flag ? 'hidden' : 'visible';
 	}
 }

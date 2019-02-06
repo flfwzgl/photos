@@ -24,8 +24,8 @@ module.exports = {
 	entry: {
 		photos: [
 			// 'core-js/fn/promise',
-			'core-js/fn/array',
-			'core-js/fn/object',
+			// 'core-js/fn/array',
+			'core-js/fn/object/assign',
 			resolve('src/photos/index.js')
 		],
 		index: resolve('src/index.js')
@@ -54,7 +54,7 @@ module.exports = {
 			include: resolve('src')
 		}, {
 			test: /\.ejs$/,
-			loader: 'ejs-loader',
+			loader: 'flf-ejs-loader',
 			include: resolve('src')
 		}, {
 			test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

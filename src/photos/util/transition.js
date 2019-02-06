@@ -16,8 +16,8 @@ import {
 	rm
 } from './index';
 
-const VISIBLE = Symbol('visible');
-const HIDDEN = Symbol('hidden');
+const VISIBLE = 1;
+const HIDDEN = 0;
 
 export default class Transition extends Event {
 	constructor (el) {

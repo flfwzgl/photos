@@ -1,7 +1,7 @@
-import './drag';
 
 export {default as Event} from './event';
 export {default as Transition} from './transition';
+export {default as Drag} from './drag';
 
 export const noop = _ => _;
 
@@ -85,13 +85,20 @@ export const hide = e => {
 }
 export const show = e => {
 	if (e instanceof Element) {
-		e.style.display = e._display || '';
+		e.style.display = '';
 	}
 }
 
 
+const toStr = Object.prototype.toString;
+const is = type => {
+	return function is (e) {
+		return toStr.call(e) === '[object ' + type + ']';
+	}
+}
 
-
+export const isArr = is('Array');
+export const isObj = is('Object');
 
 
 

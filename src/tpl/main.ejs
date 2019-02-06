@@ -16,50 +16,16 @@
 	<h4 id="examples"><%=lang.nav.examples%></h4>
 	<div class="row">
 		<div class="section">
-			<!-- <div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/park.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/qianshuiwan.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/seaworld.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/park2.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/dujiangyan.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/bridge.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/mushroom.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/shenzhen.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/up.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/iphone.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/wutongshan.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/snail.jpg)"></div>
-			</div>
-			<div class="col-xs-6 col-sm-4 col-md-3">
-				<div class="img" style="background-image: url(https://flfwzgl.github.io/static/shenzhen2.jpg)"></div>
-			</div> -->
+			<%locals.list && list.forEach(function (url, i) {%>
+				<div class="col-xs-6 col-sm-4 col-md-3">
+					<div class="img" data-id="<%=i%>" style="background-image: url(<%-url%>)"></div>
+				</div>
+			<%})%>
 		</div>
 	</div>
 
 	<h4 id="usage"><%=lang.nav.usage%></h4>
-	<div class="markdown"><%=lang.usage%></div>
+	<div class="markdown"><%-lang.usage%></div>
 
 	<h4 id="license"><%=lang.nav.license%></h4>
 	<div class="row">
