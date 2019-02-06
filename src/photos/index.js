@@ -219,7 +219,7 @@ export default class Photos extends Event {
 	_setDrag (obj) {
 		if (!this._is(obj)) return;
 
-		obj.el.onmousedown = _ => this._showOutOfWrap();
+		obj.el.onmousedown = _ => this._toggleOutOfWrap();
 		new Drag(obj.el).start();
 	}
 
@@ -238,10 +238,10 @@ export default class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
-				this._showOutOfWrap();
+				this._toggleOutOfWrap();
 				el.__drag__.rotate(90);
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
-				this._showOutOfWrap();
+				this._toggleOutOfWrap();
 				el.__drag__.rotate(-90);
 			} else if (hasCls(e, 'photos_icon--reset')) {
 				el.__drag__.reset();
@@ -249,7 +249,7 @@ export default class Photos extends Event {
 				this._setImgStyle(obj);
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
-				this._showOutOfWrap();
+				this._toggleOutOfWrap();
 				el.style.width = width + 'px';
 				el.style.height = height + 'px';
 				el.style.marginLeft = -width / 2 + 'px';
@@ -326,8 +326,8 @@ export default class Photos extends Event {
 		this.dom.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
 	}
 
-	_showOutOfWrap (flag = false) {
-		this.dom.wrap.style.overflow = flag ? 'hidden' : 'visible';
+	_toggleOutOfWrap (flag = true) {
+		this.dom.wrap.style.overflow = flag ? 'visible' : 'hidden';
 	}
 }
 
