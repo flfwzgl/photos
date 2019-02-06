@@ -2,7 +2,7 @@ import usage from './usage.md';
 export default {
 	nav: {
 		title: 'Photos',
-		examples: 'Examples',
+		demo: 'Demo',
 		usage: 'Usage',
 		license: 'License',
 	},

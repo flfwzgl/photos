@@ -1,7 +1,7 @@
 # Photos
 JavaScript 相册, 无任何依赖
 
-[Demo](https://flfwzgl.fanlinfeng.com/photos)
+[Demo](https://flfwzgl.github.io/photos)
 
 ### 用法
 
