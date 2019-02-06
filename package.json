@@ -1,9 +1,9 @@
 {
-  "name": "photos",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "main": "dist/photos.js",
+  "name": "node-photos",
+  "version": "1.0.1",
+  "description": "A photos gallery without dependencies",
+  "keywords": ["photos", "gallery", "lightbox", "image", "swipe"],
+  "main": "docs/asset/photos.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

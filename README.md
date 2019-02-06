@@ -14,7 +14,7 @@ JavaScript 相册, 无任何依赖
 或者
 
 ```
-npm i -S photos
+npm i -S node-photos
 ```
 
 ###### 基本用法
