@@ -2,7 +2,7 @@
 
 ###### 安装
 ```
-<script src="https://flfwzgl.github.io/photos/dist/asset/photos.js"><script>
+<script src="https://flfwzgl.github.io/photos/asset/photos.js"><script>
 ```
 
 或者

@@ -1,14 +1,14 @@
 # Photos
 JavaScript 相册, 无任何依赖
 
-[Demo](https://flfwzgl.fanlinfeng.com/photos/docs)
+[Demo](https://flfwzgl.fanlinfeng.com/photos)
 
 ### 用法
 
 
 ###### 安装
 ```
-<script src="https://flfwzgl.github.io/photos/docs/asset/photos.js"><script>
+<script src="https://flfwzgl.github.io/photos/asset/photos.js"><script>
 ```
 
 或者
