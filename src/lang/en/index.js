@@ -6,6 +6,6 @@ export default {
 		usage: 'Usage',
 		license: 'License',
 	},
-	des: 'JavaScript gallery, no dependencies',
+	des: 'JavaScript gallery for mobile and pc, no dependencies',
 	usage
 }

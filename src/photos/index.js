@@ -48,7 +48,7 @@ class Photos extends Event {
 				loaded: false,
 				// el: ''
 			}
-		})
+		});
 
 		this._inteceptor = inteceptor;
 
@@ -60,11 +60,9 @@ class Photos extends Event {
 		box.className = 'photos-box';
 		box.innerHTML = mainTpl();
 
-
 		let iswitch = this.iswitch = document.createElement('div');
 		iswitch.className = 'photos_switch';
 		iswitch.innerHTML = switchTpl();
-
 
 		let operate = document.createElement('div');
 		operate.className = 'photos_operate';
@@ -132,7 +130,6 @@ class Photos extends Event {
 			}
 
 			if (this._is(obj)) {
-				// console.log(123);
 				this._operateTr.show('photos-drop', this.box);
 				this._setDrag(obj);
 				// console.log(obj.index, this.index, '+++', );
@@ -177,11 +174,11 @@ class Photos extends Event {
 		let self = this;
 		obj.transition
 			// .on('visible', function () {
-			// 	console.log(this.el, '+++');
-			// 	if (self.index === obj.index) {
-			// 		// self._setDrag(obj);
-			// 		console.log(123);
-			// 	}
+			// 	// console.log(this.el, '+++');
+			// 	// if (self.index === obj.index) {
+			// 	// 	// self._setDrag(obj);
+			// 	// 	console.log(123);
+			// 	// }
 			// })
 			.on('hidden', function () {
 				obj.el.__drag__ && obj.el.__drag__.reset();
@@ -223,10 +220,10 @@ class Photos extends Event {
 	}
 
 	_setDrag (obj) {
-		if (!this._is(obj)) return;
+		// if (!this._is(obj)) return;
 
-		obj.el.onmousedown = _ => this._toggleOutOfWrap();
-		new Drag(obj.el).start();
+		obj.el.onmousedown = obj.el.ontouchstart = _ => this._toggleOutOfWrap();
+		new Drag(obj.el, 3).start();
 	}
 
 	_bindEvent () {

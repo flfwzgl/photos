@@ -36,6 +36,8 @@ const thumbList = [
 const urlList = thumbList.map(e => e.replace(/thumb_/, ''));
 
 
+const langType = getLangType();
+
 $(_ => {
 	let photos = new Photos({
 		list: urlList
@@ -44,8 +46,9 @@ $(_ => {
 
 	$(document.body)
 		.append(mainTpl({
-			lang: langMap[getLangType()],
+			lang: langMap[langType],
 			list: thumbList,
+			langType
 		}))
 		.on('click', '.img', e => {
 			let i = +e.currentTarget.dataset.id;
