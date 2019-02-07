@@ -145,8 +145,8 @@ class Photos extends Event {
 		let n = this.index;
 		let i = 0;
 
-		while (i <= 6)
-			this._loadImg(this._getObj(n + ++i));
+		while (i++ < 6)
+			this._loadImg(this._getObj(n + i));
 	}
 
 	_getObj (i) {
