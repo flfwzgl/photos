@@ -8,6 +8,7 @@ import {
 	Drag,
 	bind,
 	unbind,
+	rm,
 	hide,
 	show,
 	hasCls,
@@ -19,6 +20,9 @@ import mainTpl from './tpl/main';
 import loadingTpl from './tpl/loading';
 import operateTpl from './tpl/operate';
 import switchTpl from './tpl/switch';
+
+
+const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
 
 export default class Photos extends Event {
 	constructor (opt = {}) {
@@ -102,7 +106,7 @@ export default class Photos extends Event {
 
 		setTimeout(_ => {
 			this.trigger('visible');
-			this.showImg(n || this.index || 0);
+			this.showImg(n || this.index || 0, false);
 		})
 
 		return this;
@@ -185,7 +189,7 @@ export default class Photos extends Event {
 
 	}
 
-	async showImg (i) {
+	async showImg (i, animating = true) {
 		let n = this._getIndex(i);
 		if (this.index === n) return;
 
@@ -196,12 +200,14 @@ export default class Photos extends Event {
 		this._initPhotoImg(obj);
 
 		let cur = this.cur;
-		if (cur) {
+		if (cur && animating) {
 			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
 			cur.transition.hide(name);
 			obj.transition.show(name, this.dom.wrap);
 		} else {
-			this.dom.wrap.appendChild(obj.el);
+			cur && cur.transition.remove();
+			obj.transition.appendTo(this.dom.wrap);
+			// this.dom.wrap.appendChild(obj.el);
 		}
 
 		this._setWrap(obj);
@@ -283,6 +289,8 @@ export default class Photos extends Event {
 					}
 				});
 
+				bind(this.box, 'touchmove', this._preventScroll = e => e.preventDefault());
+
 				bind(window, 'resize', _ => {
 					this.cur.el.__drag__ && this.cur.el.__drag__.reset();
 					this._setImgStyle(this.cur);
@@ -292,6 +300,7 @@ export default class Photos extends Event {
 			})
 			.on('hidden', _ => {
 				unbind(document, 'keyup', keyupFn);
+				unbind(this.box, 'touchmove', this._preventScroll);
 			})
 
 	}
@@ -339,7 +348,10 @@ const getAdaptedSize = (w, h) => {
 
 	let ratio = cw / ch;
 
-	let padding = ch > 700 ? 100 : 50;
+	let padding = isMobile
+		? 0
+		: ch > 700
+			? 100 : 50;
 
 	if (r > ratio && w > cw - padding * 2) {
 		w = cw - padding;

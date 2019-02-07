@@ -35,6 +35,8 @@ export default class Transition extends Event {
 			// console.log(this.stateChanged, '###', this.state, el);
 			
 			this.stateChanged = false;
+
+			console.log(this.state, '+++');
 			
 			if (this.state === VISIBLE) {
 				this.trigger('visible');
@@ -84,6 +86,17 @@ export default class Transition extends Event {
 		addCls(this.el, `${name}-leave-to`);
 		// setTimeout(_ => addCls(this.el, `${name}-leave-to`));
 		return this;
+	}
+
+	remove () {
+		this.state = HIDDEN;
+		rm(this.el);
+	}
+
+	appendTo (ctn) {
+		ctn = ctn || dpcument.body;
+		this.state = VISIBLE;
+		ctn.appendChild(this.el);
 	}
 }
 
