@@ -100,11 +100,11 @@ class Photos extends Event {
 
 		this._tr.show('photos-drop');
 
-		// n = Math.random() * this.length | 0;
-
+		n = +n >= 0 ? +n : this.index;
+		
 		setTimeout(_ => {
 			this.trigger('visible');
-			this.showImg(n || this.index || 0, false);
+			this.showImg(n, false);
 		})
 
 		return this;
@@ -223,7 +223,7 @@ class Photos extends Event {
 		// if (!this._is(obj)) return;
 
 		obj.el.onmousedown = obj.el.ontouchstart = _ => this._toggleOutOfWrap();
-		new Drag(obj.el, 3).start();
+		new Drag(obj.el, 3);
 	}
 
 	_bindEvent () {
@@ -243,13 +243,16 @@ class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
 				this._toggleOutOfWrap();
 				el.__drag__.rotate(90);
+				el.__drag__.start();
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
 				this._toggleOutOfWrap();
 				el.__drag__.rotate(-90);
+				el.__drag__.start();
 			} else if (hasCls(e, 'photos_icon--reset')) {
-				el.__drag__.reset();
 				this._setWrap(obj);
 				this._setImgStyle(obj);
+				el.__drag__.reset();
+				el.__drag__.stop();
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
 				this._toggleOutOfWrap();
@@ -257,6 +260,7 @@ class Photos extends Event {
 				el.style.height = height + 'px';
 				el.style.marginLeft = -width / 2 + 'px';
 				el.style.marginTop = -height / 2 + 'px';
+				el.__drag__.start();
 			}
 
 		});

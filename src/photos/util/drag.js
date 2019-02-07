@@ -23,7 +23,7 @@ export default class Drag {
 			y: 0,
 			a: 0,
 
-			status: true,
+			status: false,
 			mousedownFn: null
 		}
 	}
@@ -36,6 +36,10 @@ export default class Drag {
 	}
 
 	start () {
+		let obj = this._transform;
+		if (obj.status) return;
+		obj.status = true;
+
 		if (this.type & 1) {
 			this.el.addEventListener('mousedown', this._mousedown = mousedown.bind(this));
 		}
@@ -56,6 +60,8 @@ export default class Drag {
 		if (this.type >> 1 & 1) {
 			this.el.removeEventListener('touchend', this._touchstart);
 		}
+
+		this._mousedown = this._touchstart = null;
 		return this;
 	}
 
