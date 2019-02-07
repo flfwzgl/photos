@@ -113,7 +113,7 @@ module.exports = {
 
 		// en
 		new HtmlWebpackPlugin({
-			filename: 'en/index.html',
+			filename: 'en.html',
 			template: resolve('src/index.html'),
 			inject: 'body',
 			chunks: [

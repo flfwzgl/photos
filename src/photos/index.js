@@ -24,7 +24,7 @@ import switchTpl from './tpl/switch';
 
 const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
 
-export default class Photos extends Event {
+class Photos extends Event {
 	constructor (opt = {}) {
 		super();
 
@@ -364,5 +364,5 @@ const getAdaptedSize = (w, h) => {
 	return {w, h};
 }
 
-
+export default Photos;
 

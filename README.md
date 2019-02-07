@@ -7,11 +7,6 @@ JavaScript 相册, 无任何依赖
 
 
 ###### 安装
-```
-<script src="https://flfwzgl.github.io/photos/asset/photos.js"><script>
-```
-
-或者
 
 ```
 npm i -S node-photos
@@ -19,7 +14,9 @@ npm i -S node-photos
 
 ###### 基本用法
 ```
-var photos = new Photos(opts);
+import Photos from 'node-photos';
+
+const photos = new Photos(opts);
 photos.show(n);
 ```
 
@@ -57,7 +54,11 @@ photos.hide();
 
 ###### 使用 interceptor
 ```
-// 可以是图片的key或其映射关系, 每次会使用对应图片的 key 传入到 interceptor
+/**
+ * 这个key可以是图片的key或其他映射规则, 当切换到一张图时,
+ * 在加载图片之前, 它对应的key会被传入到拦截器中, 拦截器可以直接返回图片url
+ * 也可以返回一个promise实例, 然后异步获取到图片 url 再将其 resolve 
+ */
 const keyList = [
   '190jmknfdsa',
   'ioklmjasbfd',

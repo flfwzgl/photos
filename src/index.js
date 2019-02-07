@@ -2,14 +2,14 @@
 
 import 'normalize.css';
 import 'css/index.less';
-import Photos from './photos';
 
 import mainTpl from 'tpl/main';
-
 import * as langMap from '@/lang';
 
+import Photos from './photos';
+
 const getLangType = _ => {
-	let arr = location.pathname.match(/\/(en)\/?$/);
+	let arr = location.pathname.match(/\/(en)/);
 	return arr && arr[1] || 'zh';
 }
 

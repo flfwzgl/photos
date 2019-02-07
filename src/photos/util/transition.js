@@ -35,8 +35,6 @@ export default class Transition extends Event {
 			// console.log(this.stateChanged, '###', this.state, el);
 			
 			this.stateChanged = false;
-
-			console.log(this.state, '+++');
 			
 			if (this.state === VISIBLE) {
 				this.trigger('visible');
