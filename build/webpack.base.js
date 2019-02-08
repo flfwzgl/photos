@@ -33,7 +33,9 @@ module.exports = {
 	output: {
 		path: config.path,
 		filename: assetPath('[name].js?[hash:8]'),
-		publicPath: config.publicPath
+		publicPath: config.publicPath,
+		library: 'Photos',
+		libraryTarget: 'umd'
 	},
 	resolve: {
 		extensions: ['.js', '/index.js', '.ejs', '.md'],

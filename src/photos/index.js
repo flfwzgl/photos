@@ -16,15 +16,35 @@ import {
 	isArr,
 } from './util';
 
-import mainTpl from './tpl/main';
-import loadingTpl from './tpl/loading';
-import operateTpl from './tpl/operate';
-import switchTpl from './tpl/switch';
+const mainTpl = `
+	<i class="photos_icon--close"></i>
+	<div class="photos_img-wrap"></div>
+`
 
+const loadingTpl = `
+	<div class="photos_loading">
+		<svg viewBox="25 25 50 50" class="circular">
+			<circle cx="50" cy="50" r="20" fill="none" class="path"></circle>
+		</svg>
+	</div>
+`
+
+const operateTpl = `
+	<i class="photos_icon--clockwise"></i>
+	<i class="photos_icon--anticlockwise"></i>
+	<i class="photos_icon photos_icon--reset" style="font-size: 12px">还原</i>
+	<i class="photos_icon photos_icon--origin" style="font-size: 12px">原图</i>
+`
+
+const switchTpl = `
+	<i class="photos_icon--arrow-left"></i>
+	<i class="photos_icon--arrow-right"></i>
+	<div class="photos_switch_serial"></div>
+`
 
 const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
 
-class Photos extends Event {
+export default class Photos extends Event {
 	constructor (opt = {}) {
 		super();
 
@@ -58,15 +78,15 @@ class Photos extends Event {
 	_init () {
 		let box = this.box = document.createElement('div');
 		box.className = 'photos-box';
-		box.innerHTML = mainTpl();
+		box.innerHTML = mainTpl;
 
 		let iswitch = this.iswitch = document.createElement('div');
 		iswitch.className = 'photos_switch';
-		iswitch.innerHTML = switchTpl();
+		iswitch.innerHTML = switchTpl;
 
 		let operate = document.createElement('div');
 		operate.className = 'photos_operate';
-		operate.innerHTML = operateTpl();
+		operate.innerHTML = operateTpl;
 
 		this.dom = {
 			serial: iswitch.getElementsByClassName('photos_switch_serial')[0],
@@ -100,7 +120,7 @@ class Photos extends Event {
 
 		this._tr.show('photos-drop');
 
-		n = +n >= 0 ? +n : this.index;
+		n = /^-?\d+$/.test(n) ? +n : this.index || 0;
 
 		setTimeout(_ => {
 			this.trigger('visible');
@@ -166,7 +186,7 @@ class Photos extends Event {
 		let el = obj.el = document.createElement('div');
 		el.className = 'photos_img';
 		el.dataset.id = obj.index;
-		el.innerHTML = loadingTpl();
+		el.innerHTML = loadingTpl;
 
 		obj.adapted = {width: 500, height: 500};
 		obj.transition = new Transition(el);
@@ -242,12 +262,10 @@ class Photos extends Event {
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
 				this._toggleOutOfWrap();
-				el.__drag__.rotate(90);
-				el.__drag__.start();
+				el.__drag__.rotate(90).start();
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
 				this._toggleOutOfWrap();
-				el.__drag__.rotate(-90);
-				el.__drag__.start();
+				el.__drag__.rotate(-90).start();
 			} else if (hasCls(e, 'photos_icon--reset')) {
 				this._setWrap(obj);
 				this._setImgStyle(obj);
@@ -364,5 +382,4 @@ const getAdaptedSize = (w, h) => {
 	return {w, h};
 }
 
-export default Photos;
 

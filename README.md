@@ -9,10 +9,15 @@ JavaScript 相册, 无任何依赖
 ###### 安装
 
 ```
+<script src="https://flfwzgl.github.io/photos/asset/photos.js"></script>
+```
+或
+```
 npm i -S node-photos
 ```
 
 ###### 基本用法
+
 ```
 import Photos from 'node-photos';
 

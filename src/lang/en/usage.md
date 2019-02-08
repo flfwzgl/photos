@@ -1,10 +1,14 @@
 **No dependencies**
 
 ###### Installation
+
+```
+<script src="https://flfwzgl.github.io/photos/asset/photos.js"></script>
+```
+or
 ```
 npm i -S node-photos
 ```
-
 ###### Basics
 ```
 import Photos from 'node-photos';
