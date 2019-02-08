@@ -101,7 +101,7 @@ class Photos extends Event {
 		this._tr.show('photos-drop');
 
 		n = +n >= 0 ? +n : this.index;
-		
+
 		setTimeout(_ => {
 			this.trigger('visible');
 			this.showImg(n, false);
@@ -181,7 +181,7 @@ class Photos extends Event {
 			// 	// }
 			// })
 			.on('hidden', function () {
-				obj.el.__drag__ && obj.el.__drag__.reset();
+				obj.el.__drag__ && obj.el.__drag__.reset().stop();
 			})
 
 	}
@@ -251,8 +251,7 @@ class Photos extends Event {
 			} else if (hasCls(e, 'photos_icon--reset')) {
 				this._setWrap(obj);
 				this._setImgStyle(obj);
-				el.__drag__.reset();
-				el.__drag__.stop();
+				el.__drag__.reset().stop();
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
 				this._toggleOutOfWrap();
@@ -293,7 +292,7 @@ class Photos extends Event {
 				bind(this.box, 'touchmove', this._preventScroll = e => e.preventDefault());
 
 				bind(window, 'resize', _ => {
-					this.cur.el.__drag__ && this.cur.el.__drag__.reset();
+					this.cur.el.__drag__ && this.cur.el.__drag__.reset().stop();
 					this._setImgStyle(this.cur);
 				});
 
