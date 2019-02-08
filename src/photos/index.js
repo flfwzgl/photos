@@ -1,8 +1,7 @@
 
-require('./css/photos.less');
+import './css/photos.less';
 
-
-const {
+import {
 	Transition,
 	Event,
 	Drag,
@@ -14,7 +13,7 @@ const {
 	hasCls,
 	loadImg,
 	isArr,
-} = require('./util');
+} from './util';
 
 const mainTpl = `
 	<i class="photos_icon--close"></i>

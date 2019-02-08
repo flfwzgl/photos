@@ -81,6 +81,30 @@
 }
 
 
+.version {
+	@c: #09c;
+	margin: 10px auto;
+	font-weight: 400;
+	font-size: 16px;
+	display: inline-block;
+	box-sizing: border-box;
+	height: 20px;
+
+	span {
+		float: right;
+		margin-left: 5px;
+		line-height: 20px;
+		color: @c;
+	}
+
+	svg {
+		fill: @c;
+	}
+
+	&:hover {
+		border-bottom: 1px solid @c;
+	}
+}
 
 
 
