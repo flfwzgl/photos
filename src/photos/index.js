@@ -348,10 +348,10 @@ const getAdaptedSize = (w, h) => {
 
 	let ratio = cw / ch;
 
-	let padding = isMobile
+	let padding = isMobile || cw <= 500 || ch <= 500
 		? 0
-		: ch > 700
-			? 100 : 50;
+		: cw <= 700 || ch <= 700
+			? 50 : 100;
 
 	if (r > ratio && w > cw - padding * 2) {
 		w = cw - padding;

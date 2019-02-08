@@ -94,11 +94,7 @@ export default class Transition extends Event {
 	appendTo (ctn) {
 		ctn = ctn || dpcument.body;
 		this.state = VISIBLE;
-
-		// this._setTransition('initial');
-		// this.el.offsetWidth;
 		ctn.appendChild(this.el);
-		// this._setTransition('');
 
 	}
 
