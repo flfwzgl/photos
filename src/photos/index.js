@@ -1,8 +1,8 @@
 
-import './css/photos.less';
+require('./css/photos.less');
 
 
-import {
+const {
 	Transition,
 	Event,
 	Drag,
@@ -14,7 +14,7 @@ import {
 	hasCls,
 	loadImg,
 	isArr,
-} from './util';
+} = require('./util');
 
 const mainTpl = `
 	<i class="photos_icon--close"></i>
@@ -44,7 +44,8 @@ const switchTpl = `
 
 const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
 
-export default class Photos extends Event {
+
+module.exports = class Photos extends Event {
 	constructor (opt = {}) {
 		super();
 
@@ -289,7 +290,7 @@ export default class Photos extends Event {
 		let keyupFn;
 		this._tr
 			.on('visible', _ => {
-				console.log('box show');
+				// console.log('photos show');
 				bind(document, 'keyup', keyupFn = e => {
 					switch (e.keyCode) {
 						case 27:
@@ -381,5 +382,4 @@ const getAdaptedSize = (w, h) => {
 
 	return {w, h};
 }
-
 
