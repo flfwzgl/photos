@@ -143,6 +143,42 @@ module.exports = class Photos extends Event {
 		return this;
 	}
 
+	async showImg (i, animating = true) {
+		let n = this._getIndex(i);
+		if (this.index === n) return;
+
+		this.dom.serial.innerHTML = `${n + 1} / ${this.length}`;
+
+		this._index = n;
+		let obj = this.list[n];
+		this._initPhotoImg(obj);
+
+		let cur = this.cur;
+		if (cur && animating) {
+			let {el, index} = cur;
+			let name = i > index ? 'photos-slide-left' : 'photos-slide-right';
+
+			// 如果已经拖拽过, 让其淡出
+			let leaveName = el.__drag__ && el.__drag__.status
+				? 'photos-fade'
+				: name
+
+			cur.transition.hide(leaveName);
+			obj.transition.show(name, this.box);
+		} else {
+			cur && cur.transition.remove();
+			obj.transition.appendTo(this.box);
+			// this.box.appendChild(obj.el);
+		}
+		this._setMatte(obj);
+
+		this.trigger('change', obj.index);
+
+		this._operateTr.hide();
+		await this._loadImg(this.cur = obj);
+		this._preLoadImg();
+	}
+
 	async _loadImg (obj) {
 		let url = obj.url;
 		if (this._inteceptor) {
@@ -178,8 +214,11 @@ module.exports = class Photos extends Event {
 		let n = this.index - 1;
 		let i = 0;
 
-		while (i < 6)
-			this._loadImg(this._getObj(n + i++));
+		while (i < 6) {
+			let obj = this._getObj(n + i++);
+			if (obj.loaded) continue;
+			this._loadImg(obj);
+		}
 	}
 
 	_getObj (i) {
@@ -207,45 +246,16 @@ module.exports = class Photos extends Event {
 		let self = this;
 		obj.transition
 			// .on('visible', function () {
-			// 	// console.log(this.el, '+++');
-			// 	// if (self.index === obj.index) {
-			// 	// 	// self._setDrag(obj);
-			// 	// 	console.log(123);
-			// 	// }
+			// 	console.log(this.el, '+++');
+			// 	if (self.index === obj.index) {
+			// 		// self._setDrag(obj);
+			// 		console.log(123);
+			// 	}
 			// })
-			.on('hidden', function () {
-				// obj.el.__drag__ && obj.el.__drag__.reset().stop();
+			.on('hidden', _ => {
+				this._resetImg(obj);
 			})
 
-	}
-
-	async showImg (i, animating = true) {
-		let n = this._getIndex(i);
-		if (this.index === n) return;
-
-		this.dom.serial.innerHTML = `${n + 1} / ${this.length}`;
-
-		this._index = n;
-		let obj = this.list[n];
-		this._initPhotoImg(obj);
-
-		let cur = this.cur;
-		if (cur && animating) {
-			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
-			cur.transition.hide(name);
-			obj.transition.show(name, this.box);
-		} else {
-			cur && cur.transition.remove();
-			obj.transition.appendTo(this.box);
-			// this.box.appendChild(obj.el);
-		}
-		this._setMatte(obj);
-
-		this.trigger('change', obj.index);
-
-		this._operateTr.hide();
-		await this._loadImg(this.cur = obj);
-		this._preLoadImg();
 	}
 
 	hide () {
@@ -254,9 +264,6 @@ module.exports = class Photos extends Event {
 	}
 
 	_setDrag (obj) {
-		// if (!this._is(obj)) return;
-
-		// obj.el.onmousedown = obj.el.ontouchstart = _ => this._toggleMatte(0);
 		new Drag(obj.el, 3);
 	}
 
@@ -271,10 +278,8 @@ module.exports = class Photos extends Event {
 			if (hasCls(e, 'photos_icon--close')) {
 				this.hide();
 			} else if (hasCls(e, 'photos_icon--arrow-left')) {
-				this._resetImg(obj);
 				this.showImg(this.index - 1);
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
-				this._resetImg(obj);
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
 				this._toggleMatte(0);
@@ -335,6 +340,8 @@ module.exports = class Photos extends Event {
 				unbind(this.box, 'touchmove', this._preventScroll);
 
 				document.documentElement.style.overflow = '';
+
+				this._resetImg(this.cur);
 			})
 
 	}
@@ -359,7 +366,7 @@ module.exports = class Photos extends Event {
 		if (this._is(obj)) {
 			let {origin} = obj;
 
-			adapted.width === origin.width && adapted.height === origin.height
+			adapted.width >= origin.width && adapted.height >= origin.height
 				? hide(this.dom.iconOrigin)
 				: show(this.dom.iconOrigin)
 		}

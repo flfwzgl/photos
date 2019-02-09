@@ -35,6 +35,10 @@ export default class Drag {
 		return this;
 	}
 
+	get status () {
+		return this._transform.status;
+	}
+
 	start () {
 		let obj = this._transform;
 		if (obj.status) return;
