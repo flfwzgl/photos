@@ -89,13 +89,14 @@ export default class Transition extends Event {
 	remove () {
 		this.state = HIDDEN;
 		rm(this.el);
+		this.trigger('hidden');
 	}
 
 	appendTo (ctn) {
 		ctn = ctn || dpcument.body;
 		this.state = VISIBLE;
 		ctn.appendChild(this.el);
-
+		this.trigger('visible');
 	}
 
 	// _setTransition (v = '') {

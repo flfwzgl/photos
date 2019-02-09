@@ -17,7 +17,10 @@ import {
 
 const mainTpl = `
 	<i class="photos_icon--close"></i>
-	<div class="photos_img-wrap"></div>
+	<div class="photos_img-matte" style="left: 0; height: 100%; width: 0"></div>
+	<div class="photos_img-matte" style="top: 0; width: 100%; height: 0"></div>
+	<div class="photos_img-matte" style="right: 0; height: 100%; width: 0"></div>
+	<div class="photos_img-matte" style="bottom: 0; width: 100%; height: 0"></div>
 `
 
 const loadingTpl = `
@@ -50,7 +53,8 @@ module.exports = class Photos extends Event {
 
 		let {
 			list,
-			inteceptor
+			inteceptor,
+			zIndex = 10000
 		} = opt;
 
 		if (!isArr(list))
@@ -71,12 +75,16 @@ module.exports = class Photos extends Event {
 		});
 
 		this._inteceptor = inteceptor;
+		this.zIndex = zIndex;
+
+		this.version = process.env.version;
 
 		this._init();
 	}
 
 	_init () {
 		let box = this.box = document.createElement('div');
+		box.style.zIndex = this.zIndex;
 		box.className = 'photos-box';
 		box.innerHTML = mainTpl;
 
@@ -89,10 +97,13 @@ module.exports = class Photos extends Event {
 		operate.innerHTML = operateTpl;
 
 		this.dom = {
+			box,
+			iswitch,
 			serial: iswitch.getElementsByClassName('photos_switch_serial')[0],
-			wrap: box.getElementsByClassName('photos_img-wrap')[0],
+			// wrap: box.getElementsByClassName('photos_img-wrap')[0],
 			operate,
 			iconOrigin: operate.getElementsByClassName('photos_icon--origin')[0],
+			matteList: [].slice.call(box.getElementsByClassName('photos_img-matte'))
 		};
 
 		this._switchTr = new Transition(iswitch);
@@ -117,6 +128,8 @@ module.exports = class Photos extends Event {
 
 	show (n) {
 		if (!this.length) return console.error('opt.list 是空数组!');
+
+		document.documentElement.style.overflow = 'hidden';
 
 		this._tr.show('photos-drop');
 
@@ -162,11 +175,11 @@ module.exports = class Photos extends Event {
 	}
 
 	_preLoadImg () {
-		let n = this.index;
+		let n = this.index - 1;
 		let i = 0;
 
-		while (i++ < 6)
-			this._loadImg(this._getObj(n + i));
+		while (i < 6)
+			this._loadImg(this._getObj(n + i++));
 	}
 
 	_getObj (i) {
@@ -201,7 +214,7 @@ module.exports = class Photos extends Event {
 			// 	// }
 			// })
 			.on('hidden', function () {
-				obj.el.__drag__ && obj.el.__drag__.reset().stop();
+				// obj.el.__drag__ && obj.el.__drag__.reset().stop();
 			})
 
 	}
@@ -220,14 +233,15 @@ module.exports = class Photos extends Event {
 		if (cur && animating) {
 			let name = i > cur.index ? 'photos-slide-left' : 'photos-slide-right';
 			cur.transition.hide(name);
-			obj.transition.show(name, this.dom.wrap);
+			obj.transition.show(name, this.box);
 		} else {
 			cur && cur.transition.remove();
-			obj.transition.appendTo(this.dom.wrap);
-			// this.dom.wrap.appendChild(obj.el);
+			obj.transition.appendTo(this.box);
+			// this.box.appendChild(obj.el);
 		}
+		this._setMatte(obj);
 
-		this._setWrap(obj);
+		this.trigger('change', obj.index);
 
 		this._operateTr.hide();
 		await this._loadImg(this.cur = obj);
@@ -242,7 +256,7 @@ module.exports = class Photos extends Event {
 	_setDrag (obj) {
 		// if (!this._is(obj)) return;
 
-		obj.el.onmousedown = obj.el.ontouchstart = _ => this._toggleOutOfWrap();
+		// obj.el.onmousedown = obj.el.ontouchstart = _ => this._toggleMatte(0);
 		new Drag(obj.el, 3);
 	}
 
@@ -257,22 +271,23 @@ module.exports = class Photos extends Event {
 			if (hasCls(e, 'photos_icon--close')) {
 				this.hide();
 			} else if (hasCls(e, 'photos_icon--arrow-left')) {
+				this._resetImg(obj);
 				this.showImg(this.index - 1);
 			} else if (hasCls(e, 'photos_icon--arrow-right')) {
+				this._resetImg(obj);
 				this.showImg(this.index + 1);
 			} else if (hasCls(e, 'photos_icon--clockwise')) {
-				this._toggleOutOfWrap();
+				this._toggleMatte(0);
 				el.__drag__.rotate(90).start();
 			} else if (hasCls(e, 'photos_icon--anticlockwise')) {
-				this._toggleOutOfWrap();
+				this._toggleMatte(0);
 				el.__drag__.rotate(-90).start();
 			} else if (hasCls(e, 'photos_icon--reset')) {
-				this._setWrap(obj);
-				this._setImgStyle(obj);
-				el.__drag__.reset().stop();
+				this._setMatte(obj);
+				this._resetImg(obj);
 			} else if (hasCls(e, 'photos_icon--origin')) {
 				let {width, height} = origin;
-				this._toggleOutOfWrap();
+				this._toggleMatte(0);
 				el.style.width = width + 'px';
 				el.style.height = height + 'px';
 				el.style.marginLeft = -width / 2 + 'px';
@@ -310,8 +325,7 @@ module.exports = class Photos extends Event {
 				bind(this.box, 'touchmove', this._preventScroll = e => e.preventDefault());
 
 				bind(window, 'resize', _ => {
-					this.cur.el.__drag__ && this.cur.el.__drag__.reset().stop();
-					this._setImgStyle(this.cur);
+					this._resetImg(this.cur);
 				});
 
 				this.length > 1 && this._switchTr.show('photos-drop', this.box);
@@ -319,8 +333,16 @@ module.exports = class Photos extends Event {
 			.on('hidden', _ => {
 				unbind(document, 'keyup', keyupFn);
 				unbind(this.box, 'touchmove', this._preventScroll);
+
+				document.documentElement.style.overflow = '';
 			})
 
+	}
+
+	_resetImg (obj) {
+		let {el} = obj;
+		el.__drag__ && el.__drag__.reset().stop();
+		this._setImgStyle(obj);
 	}
 
 	_setImgStyle (obj) {
@@ -332,7 +354,7 @@ module.exports = class Photos extends Event {
 		let adapted = obj.adapted = {width: w, height: h};
 		obj.el.style.cssText = `width: ${w}px; height: ${h}px; margin-left: ${-w/2}px; margin-top: ${-h/2}px`;
 
-		this._setWrap(obj);
+		this._setMatte(obj);
 
 		if (this._is(obj)) {
 			let {origin} = obj;
@@ -347,14 +369,21 @@ module.exports = class Photos extends Event {
 		return this.index === obj.index;
 	}
 
-	_setWrap (obj) {
+	_setMatte (obj) {
 		if (this.index !== obj.index) return;
 		let {width, height} = obj.adapted;
-		this.dom.wrap.style.cssText = `width: ${width}px; height: ${height}px; margin-left: ${-width/2}px; margin-top: ${-height/2}px`;
+
+		let hw = document.documentElement.clientWidth / 2;
+		let hh = document.documentElement.clientHeight / 2;
+
+		this._toggleMatte();
+		this.dom.matteList[0].style.width = this.dom.matteList[2].style.width = hw - width / 2 + 'px';
+		this.dom.matteList[1].style.height = this.dom.matteList[3].style.height = hh - height / 2 + 'px';
+
 	}
 
-	_toggleOutOfWrap (flag = true) {
-		this.dom.wrap.style.overflow = flag ? 'visible' : 'hidden';
+	_toggleMatte (flag = true) {
+		return this.dom.matteList.forEach(e => e.style.display = flag ? 'block' : 'none');
 	}
 }
 

@@ -40,7 +40,8 @@ const langType = getLangType();
 
 $(_ => {
 	let photos = new Photos({
-		list: urlList
+		list: urlList,
+		zIndex: 1000000
 	});
 
 

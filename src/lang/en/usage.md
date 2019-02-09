@@ -19,9 +19,14 @@ photos.show(n);
 
 * `opts` {Object}
   * `opts.list` {Array mandatory} Consist of all image url or image key
+  * `opts.zIndex` {Number optional}  The `z-index` of `photos`, default `10000`
   * `opts.interceptor` {Function optional}  The interceptor before loading big image, expected to return an instance of Promise or a real image url.
 
-* `n` {Number optional} Display the nth image, starting at 0, default 
+
+* `photos` instance
+  * `hide` {Function} Close photos
+  * `show(n)` {Number optional} Open photos and display the nth image, starting at 0, default 0
+  * `showImg(n)`, `n` {Number optional} Display the nth image
 
 
 ###### Default binding

@@ -20,9 +20,14 @@ photos.show(n);
 
 * `opts` {Object}
   * `opts.list` {Array 必需} 所有大图 url 或 key 组成的数组
+  * `opts.zIndex` {Number 可选} 相册的 `z-index`, 默认 `10000`
   * `opts.interceptor` {Function 可选} 加载大图之前执行的拦截器, 拦截器执行返回图片url或 `Promise` 实例
 
-* `n` {Number 可选} 显示第 n 张图片(n从0开始, 默认为0)
+
+* `photos` 实例对象
+  * `hide` {Function}, 关闭相册
+  * `show(n)` {Function}, `n` {Number 可选}, 打开相册并显示第 `n` 张图片(n从0开始, 默认为0)
+  * `showImg(n)`, `n` {Number 可选}, 显示第 `n` 张图片
 
 
 ###### 默认按键绑定
