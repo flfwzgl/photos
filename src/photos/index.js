@@ -47,6 +47,11 @@ const switchTpl = `
 const isMobile = /android|iphone|ipad/i.test(navigator.userAgent);
 
 
+const LOAD_ERROR = -1;
+const UNLOADED = 0;
+const LOADING = 1;
+const LOADED = 2;
+
 module.exports = class Photos extends Event {
 	constructor (opt = {}) {
 		super();
@@ -57,8 +62,11 @@ module.exports = class Photos extends Event {
 			zIndex = 10000
 		} = opt;
 
-		if (!isArr(list))
+		if (!isArr(list)) {
 			throw new TypeError('opt.list must be an array!');
+		} else if (!list.length) {
+			throw new Error('opt.list 是空数组!');
+		}
 		
 		if (inteceptor && typeof inteceptor !== 'function')
 			throw new TypeError('opt.inteceptor must be a function!');
@@ -69,10 +77,12 @@ module.exports = class Photos extends Event {
 				key: k,
 				url: k,
 				show: false,
-				loaded: false,
+				state: UNLOADED,
 				// el: ''
 			}
 		});
+
+		window.p = this;
 
 		this._inteceptor = inteceptor;
 		this.zIndex = zIndex;
@@ -127,8 +137,6 @@ module.exports = class Photos extends Event {
 	}
 
 	show (n) {
-		if (!this.length) return console.error('opt.list 是空数组!');
-
 		document.documentElement.style.overflow = 'hidden';
 
 		this._tr.show('photos-drop');
@@ -158,7 +166,7 @@ module.exports = class Photos extends Event {
 			let {el, index} = cur;
 			let name = i > index ? 'photos-slide-left' : 'photos-slide-right';
 
-			// 如果已经拖拽过, 让其淡出
+			// 如果已经拖拽过, 让其淡出, 以提升交互体验
 			let leaveName = el.__drag__ && el.__drag__.status
 				? 'photos-fade'
 				: name
@@ -168,45 +176,67 @@ module.exports = class Photos extends Event {
 		} else {
 			cur && cur.transition.remove();
 			obj.transition.appendTo(this.box);
-			// this.box.appendChild(obj.el);
 		}
+
 		this._setMatte(obj);
 
-		this.trigger('change', obj.index);
+		this.cur = obj;
+		this.trigger('change', obj.index, obj);
 
 		this._operateTr.hide();
-		await this._loadImg(this.cur = obj);
-		this._preLoadImg();
+		if (obj.state === LOADED) {
+			this._operateTr.show('photos-drop', this.box);
+			this._setImgStyle(obj);
+
+			/**
+			 * 即使当前图片已加载, 也要预加载, 填补之前预加载因网络问题漏掉的
+			 * eg.
+			 * 	当显示图2时, 会预加载 1, 3, 4, 5, 6, 若中途 4 加载 error,
+			 * 	当切换到图3时, 会重新预加载 4
+			 */
+			this._preLoadImg();
+		} else if (obj.state === LOAD_ERROR || obj.state === UNLOADED) {
+			await this._loadImg(obj);
+			this._preLoadImg();
+		}
 	}
 
 	async _loadImg (obj) {
+		// 避免重复加载
+		if (obj.state !== LOAD_ERROR && obj.state !== UNLOADED) return;
+		
+		obj.state = LOADING;
+
 		let url = obj.url;
-		if (this._inteceptor) {
-			let p = this._inteceptor(obj.key);
-			url = obj.url = p instanceof Promise ? await p : p;	
+		try {
+			if (this._inteceptor) {
+				let p = this._inteceptor(obj.key);
+				url = obj.url = p instanceof Promise ? await p : p;	
+			}
+		} catch (e) {
+			obj.state = LOAD_ERROR;
+			console.error(`The ${obj.index}th inteceptor error!\n`, e);
 		}
 
 		try {
 			let {img, width, height} = await loadImg(url);
 			obj.origin = {width, height};
 
-			obj.loaded = true;
+			obj.state = LOADED;
 
-			if (obj.el) {
-				this._setImgStyle(obj);
-				obj.el.innerHTML = '';
-				obj.el.appendChild(img);
-			}
+			// 预加载时, el还不存在
+			this._initPhotoImg(obj);
+			this._setImgStyle(obj);
+			obj.el.innerHTML = '';
+			obj.el.appendChild(img);
+			this._addDrag(obj);
 
 			if (this._is(obj)) {
 				this._operateTr.show('photos-drop', this.box);
-				this._setDrag(obj);
-				// console.log(obj.index, this.index, '+++', );
 			}
 		} catch (e) {
-			throw e;
-			console.log(e);
-			// console.error(`${obj.url} load error!`)
+			obj.state = LOAD_ERROR;
+			console.error(`${obj.url} load error!\n`, e);
 		}
 	}
 
@@ -216,7 +246,6 @@ module.exports = class Photos extends Event {
 
 		while (i < 6) {
 			let obj = this._getObj(n + i++);
-			if (obj.loaded) continue;
 			this._loadImg(obj);
 		}
 	}
@@ -237,7 +266,7 @@ module.exports = class Photos extends Event {
 
 		let el = obj.el = document.createElement('div');
 		el.className = 'photos_img';
-		el.dataset.id = obj.index;
+		// el.dataset.id = obj.index;
 		el.innerHTML = loadingTpl;
 
 		obj.adapted = {width: 500, height: 500};
@@ -248,7 +277,7 @@ module.exports = class Photos extends Event {
 			// .on('visible', function () {
 			// 	console.log(this.el, '+++');
 			// 	if (self.index === obj.index) {
-			// 		// self._setDrag(obj);
+			// 		// self._addDrag(obj);
 			// 		console.log(123);
 			// 	}
 			// })
@@ -263,7 +292,7 @@ module.exports = class Photos extends Event {
 		tr && tr.hide('photos-drop');
 	}
 
-	_setDrag (obj) {
+	_addDrag (obj) {
 		new Drag(obj.el, 3);
 	}
 
@@ -348,8 +377,10 @@ module.exports = class Photos extends Event {
 
 	_resetImg (obj) {
 		let {el} = obj;
-		el.__drag__ && el.__drag__.reset().stop();
-		this._setImgStyle(obj);
+		if (obj.state === LOADED) {
+			el.__drag__ && el.__drag__.reset().stop();
+			this._setImgStyle(obj);
+		}
 	}
 
 	_setImgStyle (obj) {

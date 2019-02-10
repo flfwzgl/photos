@@ -6,6 +6,10 @@
 	transition: transform @t, opacity @t;
 }
 
+html {
+	-webkit-tap-highlight-color: transparent;
+}
+
 .photos {
 	&-box {
 		z-index: 1000000;
@@ -16,6 +20,7 @@
 		bottom: 0;
 		overflow: hidden;
 		background: #000;
+		user-select: none;
 		.tr(.5s);
 
 		i {
@@ -107,7 +112,6 @@
 		margin-left: 300px;
 		z-index: 100;
 		.tr();
-		// background: #fff;
 
 		[class^=photos_icon] {
 			width: @h;
