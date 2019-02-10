@@ -22,6 +22,7 @@ const thumbList = [
 	'https://flfwzgl.github.io/static/thumb_shenzhen.jpg',
 	'https://flfwzgl.github.io/static/thumb_up.jpg',
 	'https://flfwzgl.github.io/static/thumb_iphone.jpg',
+	'https://flfwzgl.github.io/static/thumb_cod.jpg',
 	'https://flfwzgl.github.io/static/thumb_wutongshan.jpg',
 	'https://flfwzgl.github.io/static/thumb_park2.jpg',
 	'https://flfwzgl.github.io/static/thumb_jiuzhaigou2.jpg',
@@ -31,6 +32,21 @@ const thumbList = [
 	'https://flfwzgl.github.io/static/thumb_shenzhen2.jpg',
 	'https://flfwzgl.github.io/static/thumb_bridge.jpg',
 	'https://flfwzgl.github.io/static/thumb_mushroom.jpg',
+	
+	'https://flfwzgl.github.io/static/thumb_tokyo.jpg',
+	'https://flfwzgl.github.io/static/thumb_crysis2.jpg',
+	'https://flfwzgl.github.io/static/thumb_dolphin.jpg',
+	'https://flfwzgl.github.io/static/thumb_elephant.jpg',
+	'https://flfwzgl.github.io/static/thumb_hongkong.jpg',
+	'https://flfwzgl.github.io/static/thumb_sf5.jpg',
+	'https://flfwzgl.github.io/static/thumb_panda.jpg',
+	'https://flfwzgl.github.io/static/thumb_particles.jpg',
+	'https://flfwzgl.github.io/static/thumb_dirt3.jpg',
+	'https://flfwzgl.github.io/static/thumb_red_panda.jpg',
+	'https://flfwzgl.github.io/static/thumb_ropeway.jpg',
+	'https://flfwzgl.github.io/static/thumb_shanghai.jpg',
+	'https://flfwzgl.github.io/static/thumb_crysis3.jpg',
+	'https://flfwzgl.github.io/static/thumb_tiger.jpg',
 ]
 
 const urlList = thumbList.map(e => e.replace(/thumb_/, ''));
