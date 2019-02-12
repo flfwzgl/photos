@@ -4,3 +4,4 @@ _*
 old
 *.zip
 test/asset/fork.js
+dist
