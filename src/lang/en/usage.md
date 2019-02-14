@@ -1,6 +1,6 @@
 **No dependencies**
 
-###### Installation
+##### Installation
 
 ```
 <script src="https://flfwzgl.github.io/photos/asset/photos.js"></script>
@@ -9,7 +9,7 @@ or
 ```
 npm i -S node-photos
 ```
-###### Basics
+##### Basics
 ```
 import Photos from 'node-photos';
 
@@ -18,9 +18,9 @@ photos.show(n);
 ```
 
 * `opts` {Object}
-  * `opts.list` {Array mandatory} Consist of all image url or image key
+  * `opts.list` {Array mandatory} Consist of all image urls or image keys
   * `opts.zIndex` {Number optional}  The `z-index` of `photos`, default `10000`
-  * `opts.interceptor` {Function optional}  The interceptor before loading big image, expected to return an instance of Promise or a real image url.
+  * `opts.interceptor` {Function optional}  The interceptor before loading a big image, expected to return an instance of Promise or a real image url.
 
 
 * `photos` instance
@@ -29,15 +29,15 @@ photos.show(n);
   * `showImg(n)`, `n` {Number optional} Display the nth image
 
 
-###### Default binding
+##### Default binding
 * `esc` close the photos
 * `←`、`↑` switch to the previous image
 * `→`、`↓` switch to the next image
 
 
-###### Examples
+##### Examples
 ```
-// return a instance of Photos
+// return an instance of Photos
 var photos = new Photos({
   list: [
     'https://flfwzgl.github.io/static/park.jpg',
@@ -54,14 +54,14 @@ photos.hide();
 ```
 
 
-###### Interceptor usage
+##### Interceptor usage
 ```
 /**
  * This key may be an image key or other mapping rules,
- * when switching to one image, before loading the image,
+ * when switching to an image, before loading the image,
  * its corresponding key will be passed to the inteceptor,
  * the inteceptor may return an image url directly or return a Promise instance
- * which get image url asynchrously and resolve it.
+ * which get the image url asynchrously and resolve it.
  */
 const keyList = [
   '190jmknfdsa',
@@ -84,7 +84,3 @@ var photos = new Photos({
   }
 });
 ```
-
-
-
-

@@ -114,15 +114,15 @@ MIT
 
 # Photos
 
-**JavaScript gallery, no dependencies**
+**JavaScript gallery for PCs and mobiles, no dependencies**
 
 
 ### Features
 
-* For PC, compatible with Mobile
+* For PCs, and compatible with mobiles
 * High performance animation
-* Image preloading
-* Based on events
+* Image-preloading
+* Events-Based
 
 ### Compatibility
 | Edge |  IE10~11(with Promise polyfill)    | Chrome 32+ |  Firefox 29+ | Opera 19+ |  Safari 9+  |
@@ -148,9 +148,9 @@ photos.show(n);
 ```
 
 * `opts` {Object}
-  * `opts.list` {Array mandatory} Consist of all image url or image key
+  * `opts.list` {Array mandatory} Consist of all image urls or image keys
   * `opts.zIndex` {Number optional}  The `z-index` of `photos`, default `10000`
-  * `opts.interceptor` {Function optional}  The interceptor before loading big image, expected to return an instance of Promise or a real image url.
+  * `opts.interceptor` {Function optional}  The interceptor before loading a big image, expected to return an instance of Promise or a real image url.
 
 
 * `photos` instance
@@ -167,7 +167,7 @@ photos.show(n);
 
 #### Examples
 ```
-// return a instance of Photos
+// return an instance of Photos
 var photos = new Photos({
   list: [
     'https://flfwzgl.github.io/static/park.jpg',
@@ -188,10 +188,10 @@ photos.hide();
 ```
 /**
  * This key may be an image key or other mapping rules,
- * when switching to one image, before loading the image,
+ * when switching to an image, before loading the image,
  * its corresponding key will be passed to the inteceptor,
  * the inteceptor may return an image url directly or return a Promise instance
- * which get image url asynchrously and resolve it.
+ * which get the image url asynchrously and resolve it.
  */
 const keyList = [
   '190jmknfdsa',

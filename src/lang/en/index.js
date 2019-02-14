@@ -11,7 +11,7 @@ export default {
 		compatibility: 'Compatibility',
 		license: 'License',
 	},
-	des: 'JavaScript gallery for mobile and pc, no dependencies',
+	des: 'JavaScript gallery for PCs and mobiles, no dependencies',
 	usage,
 	feature,
 	compatibility,
