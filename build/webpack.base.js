@@ -22,12 +22,7 @@ const getLoader = name => ({
 
 module.exports = {
 	entry: {
-		photos: [
-			// 'core-js/fn/promise',
-			// 'core-js/fn/array',
-			'core-js/fn/object/assign',
-			resolve('src/photos/index.js')
-		],
+		photos: resolve('src/photos/index.js'),
 		index: [
 			'core-js/fn/promise',
 			resolve('src/index.js')
