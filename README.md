@@ -1,7 +1,7 @@
 # Photos
 JavaScript 相册, 无任何依赖
 
-**[Demo](https://flfwzgl.github.io/photos)**
+**[Demo](https://demo.fanlinfeng.com/photos--%E7%9B%B8%E5%86%8C/)**
 
 ### 特点
 * 兼容移动端和pc端
