@@ -27,7 +27,7 @@ export default class Transition extends Event {
 			throw new TypeError('The argument el must be an element!');
 
 		this.el = el;
-		bind(el, 'transitionend', e => {
+		bind(el, 'webkitTransitionEnd transitionend', e => {
 			e.stopPropagation();
 
 			if (!this.stateChanged || e.currentTarget !== el) return;
@@ -93,7 +93,7 @@ export default class Transition extends Event {
 	}
 
 	appendTo (ctn) {
-		ctn = ctn || dpcument.body;
+		ctn = ctn || document.body;
 		this.state = VISIBLE;
 		ctn.appendChild(this.el);
 		this.trigger('visible');

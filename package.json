@@ -1,6 +1,6 @@
 {
   "name": "node-photos",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A photos gallery without dependencies",
   "keywords": [
     "photos",

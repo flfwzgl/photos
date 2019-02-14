@@ -25,7 +25,7 @@ module.exports = merge(webpackConfig, {
 		hot: true,
 		host: '0.0.0.0',
 		allowedHosts: [
-			'app.7daichina.com',
+			'demo.fanlinfeng.com',
 		],
 		port,
 

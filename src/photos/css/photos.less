@@ -21,13 +21,12 @@ html {
 		overflow: hidden;
 		background: #000;
 		user-select: none;
-		.tr(.5s);
+		.tr(.3s);
 
 		i {
 			font-style: normal;
 		}
 	}
-
 
 	&_icon--close {
 		position: absolute;
@@ -137,10 +136,19 @@ html {
 	&_img-matte {
 		@t: .3s;
 		position: fixed;
-		transition: width @t, height @t;
-		will-change: width, height;
 		background: #000;
 		z-index: 1;
+
+		&--left, &--right {
+			transition: width @t;
+			will-change: width;
+		}
+
+		&--top, &--bottom {
+			transition: height @t;
+			will-change: height;
+		}
+
 	}
 
 	&_img {
@@ -154,7 +162,7 @@ html {
 		margin-top: -@d/2;
 		will-change: transform, opacity;
 
-		.tr(.5s);
+		.tr(.4s);
 
 		img {
 			width: 100%;

@@ -17,10 +17,10 @@ import {
 
 const mainTpl = `
 	<i class="photos_icon--close"></i>
-	<div class="photos_img-matte" style="left: 0; height: 100%; width: 0"></div>
-	<div class="photos_img-matte" style="top: 0; width: 100%; height: 0"></div>
-	<div class="photos_img-matte" style="right: 0; height: 100%; width: 0"></div>
-	<div class="photos_img-matte" style="bottom: 0; width: 100%; height: 0"></div>
+	<div class="photos_img-matte photos_img-matte--left" style="left: 0; height: 100%; width: 0"></div>
+	<div class="photos_img-matte photos_img-matte--top" style="top: 0; width: 100%; height: 0"></div>
+	<div class="photos_img-matte photos_img-matte--right" style="right: 0; height: 100%; width: 0"></div>
+	<div class="photos_img-matte photos_img-matte--bottom" style="bottom: 0; width: 100%; height: 0"></div>
 `
 
 const loadingTpl = `
@@ -140,13 +140,14 @@ module.exports = class Photos extends Event {
 		document.documentElement.style.overflow = 'hidden';
 
 		this._tr.show('photos-drop');
+		// this._tr.show('photos-fade');
 
 		n = /^-?\d+$/.test(n) ? +n : this.index || 0;
 
 		setTimeout(_ => {
 			this.trigger('visible');
 			this.showImg(n, false);
-		})
+		});
 
 		return this;
 	}
@@ -170,6 +171,20 @@ module.exports = class Photos extends Event {
 			let leaveName = el.__drag__ && el.__drag__.status
 				? 'photos-fade'
 				: name
+
+			// let corg = cur.origin;
+			// if (corg && corg.width * corg.height >= 4000000) {
+			// 	cur.transition.hide('photos-fade');
+			// } else {
+			// 	cur.transition.hide(leaveName);
+			// }
+
+			// let org = obj.origin;
+			// if (org && org.width * org.height >= 4000000) {
+			// 	obj.transition.show('photos-fade', this.box);
+			// } else {
+			// 	obj.transition.show(name, this.box);
+			// }
 
 			cur.transition.hide(leaveName);
 			obj.transition.show(name, this.box);
@@ -266,7 +281,6 @@ module.exports = class Photos extends Event {
 
 		let el = obj.el = document.createElement('div');
 		el.className = 'photos_img';
-		// el.dataset.id = obj.index;
 		el.innerHTML = loadingTpl;
 
 		obj.adapted = {width: 500, height: 500};
@@ -290,6 +304,7 @@ module.exports = class Photos extends Event {
 	hide () {
 		let tr = this._tr;
 		tr && tr.hide('photos-drop');
+		// tr && tr.hide('photos-fade');
 	}
 
 	_addDrag (obj) {

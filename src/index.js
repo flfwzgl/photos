@@ -14,39 +14,39 @@ const getLangType = _ => {
 }
 
 const thumbList = [
-	'https://flfwzgl.github.io/static/thumb_park.jpg',
-	'https://flfwzgl.github.io/static/thumb_qianshuiwan.jpg',
-	'https://flfwzgl.github.io/static/thumb_jiuzhaigou.jpg',
-	'https://flfwzgl.github.io/static/thumb_seaworld.jpg',
-	'https://flfwzgl.github.io/static/thumb_wind.jpg',
-	'https://flfwzgl.github.io/static/thumb_shenzhen.jpg',
-	'https://flfwzgl.github.io/static/thumb_up.jpg',
-	'https://flfwzgl.github.io/static/thumb_iphone.jpg',
-	'https://flfwzgl.github.io/static/thumb_cod.jpg',
-	'https://flfwzgl.github.io/static/thumb_wutongshan.jpg',
-	'https://flfwzgl.github.io/static/thumb_park2.jpg',
-	'https://flfwzgl.github.io/static/thumb_jiuzhaigou2.jpg',
-	'https://flfwzgl.github.io/static/thumb_grass.jpg',
-	'https://flfwzgl.github.io/static/thumb_snail.jpg',
-	'https://flfwzgl.github.io/static/thumb_optimus.jpg',
-	'https://flfwzgl.github.io/static/thumb_shenzhen2.jpg',
-	'https://flfwzgl.github.io/static/thumb_bridge.jpg',
-	'https://flfwzgl.github.io/static/thumb_mushroom.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_park.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_qianshuiwan.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_jiuzhaigou.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_seaworld.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_wind.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_shenzhen.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_up.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_iphone.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_cod.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_wutongshan.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_park2.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_jiuzhaigou2.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_grass.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_snail.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_optimus.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_shenzhen2.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_bridge.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_mushroom.jpg',
 	
-	'https://flfwzgl.github.io/static/thumb_tokyo.jpg',
-	'https://flfwzgl.github.io/static/thumb_crysis2.jpg',
-	'https://flfwzgl.github.io/static/thumb_dolphin.jpg',
-	'https://flfwzgl.github.io/static/thumb_elephant.jpg',
-	'https://flfwzgl.github.io/static/thumb_hongkong.jpg',
-	'https://flfwzgl.github.io/static/thumb_sf5.jpg',
-	'https://flfwzgl.github.io/static/thumb_panda.jpg',
-	'https://flfwzgl.github.io/static/thumb_particles.jpg',
-	'https://flfwzgl.github.io/static/thumb_dirt3.jpg',
-	'https://flfwzgl.github.io/static/thumb_red_panda.jpg',
-	'https://flfwzgl.github.io/static/thumb_ropeway.jpg',
-	'https://flfwzgl.github.io/static/thumb_shanghai.jpg',
-	'https://flfwzgl.github.io/static/thumb_crysis3.jpg',
-	'https://flfwzgl.github.io/static/thumb_tiger.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_tokyo.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_crysis2.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_dolphin.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_elephant.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_hongkong.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_sf5.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_panda.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_particles.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_dirt3.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_red_panda.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_ropeway.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_shanghai.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_crysis3.jpg',
+	'https://static.fanlinfeng.com/photos/thumb_tiger.jpg',
 ]
 
 const urlList = thumbList.map(e => e.replace(/thumb_/, ''));
@@ -68,7 +68,8 @@ $(_ => {
 			langType
 		}))
 		.on('click', '.img', e => {
-			let i = +e.currentTarget.dataset.id;
+			let $e = $(e.currentTarget);
+			let i = +$e.attr('data-id') || 0;
 			photos.show(i);
 		})
 });

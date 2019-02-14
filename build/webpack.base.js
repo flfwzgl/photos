@@ -28,7 +28,10 @@ module.exports = {
 			'core-js/fn/object/assign',
 			resolve('src/photos/index.js')
 		],
-		index: resolve('src/index.js')
+		index: [
+			'core-js/fn/promise',
+			resolve('src/index.js')
+		]
 	},
 	output: {
 		path: config.path,

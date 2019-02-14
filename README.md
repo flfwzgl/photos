@@ -3,11 +3,17 @@ JavaScript 相册, 无任何依赖
 
 **[Demo](https://demo.fanlinfeng.com/photos--%E7%9B%B8%E5%86%8C/)**
 
-### 特点
+### 特性
 * 兼容移动端和pc端
 * 高性能动画
 * 图片预加载
 * 基于事件
+
+### 兼容性
+| Edge |  IE10~11(需引入Promise)    | Chrome 32+ |  Firefox 29+ | Opera 19+ |  Safari 9+  |
+| :-:  |   :-:                    |  :-:       |   :-:        | :-:         |   :--:     |
+|  ✔️  |    ✔️                    |   ✔️       |   ✔️         |  ✔️         |   ✔️       |
+
 
 
 ### 用法
@@ -113,10 +119,16 @@ MIT
 
 ### Features
 
-* Compitable with Mobile and PC
+* For PC, compatible with Mobile
 * High performance animation
 * Image preloading
 * Based on events
+
+### Compatibility
+| Edge |  IE10~11(with Promise polyfill)    | Chrome 32+ |  Firefox 29+ | Opera 19+ |  Safari 9+  |
+| :-:  |   :-:                               |  :-:       |   :-:        | :-:         |   :--:     |
+|  ✔️  |    ✔️                               |   ✔️       |   ✔️         |  ✔️         |   ✔️       |
+
 
 ### Installation
 
