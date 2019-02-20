@@ -4,7 +4,7 @@ const ENV                   = process.env.NODE_ENV;
 const path                  = require('path');
 const webpack               = require('webpack');
 const HtmlWebpackPlugin     = require('html-webpack-plugin');
-const pro          			= ENV === 'production';
+const pro          			= ENV !== 'dev';
 
 const config                = require('./config')[ENV];
 const pkg					= require('../package');

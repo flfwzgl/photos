@@ -28,23 +28,5 @@ module.exports = merge(webpackConfig, {
 			'demo.fanlinfeng.com',
 		],
 		port,
-
-		proxy: {
-			'/sevend': {
-				target: 'http://10.40.11.142:30080',
-			},
-			'/get_qiniu_token': {
-				target: `http://10.40.11.40:30080`,
-				// changeOrigin: true,
-
-				// onProxyRes: proxyAddMock({
-				// 	root: path.join(__dirname, '../mock')
-				// }),
-
-				pathRewrite: {
-				    '^/get_qiniu_token' : '/api/offline/get_qiniu_uptoken'
-				}
-			},
-		}
 	}
 })
